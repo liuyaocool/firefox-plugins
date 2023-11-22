@@ -1,0 +1,77 @@
+html  {
+    background-color: #131516 !important;
+}
+
+select,option,body,input,div {
+    background-color: #ffffff00 !important;
+}
+
+label, p, h5 {
+    color: #2e6da4 !important;
+}
+
+tbody > tr:hover {
+    background-color: #21272a !important;
+}
+
+.form-control, td, th {
+    color: rgb(178, 172, 162) !important;
+    background-image: none !important;;
+    border-color: rgb(62, 68, 70) !important;;
+    box-shadow: rgb(0 0 0 / 7%) 0px 1px 1px inset !important;;
+}
+
+.form-control:focus {
+    border-color: #0fffd7 !important;
+}
+
+::-webkit-scrollbar-track-piece{
+    background-color: #2d373c;
+    -webkit-border-radius:0;
+}
+::-webkit-scrollbar{
+    width:16px;
+    height:16px;
+}
+::-webkit-scrollbar-thumb{
+    height:50px;
+    background-color:#999;
+    -webkit-border-radius:4px;
+    outline:2px solid #fff;
+    outline-offset:-2px;
+    border: 2px solid #fff;
+    border-radius: 16px;
+}
+::-webkit-scrollbar-thumb:hover{
+    height:50px;
+    background-color:#9f9f9f;
+    -webkit-border-radius:4px;
+}
+
+/*
+
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    border: 5px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: 1px 1px 5px rgba(0,0,0,.2) inset;
+}
+
+::-webkit-scrollbar-thumb {
+    min-height: 20px;
+    background-clip: content-box;
+    box-shadow: 0 0 0 5px rgba(0,0,0,.2) inset;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+ */

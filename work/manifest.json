@@ -1,0 +1,38 @@
+{
+    "manifest_version": 2,
+    "name": "work",
+    "version": "1.0",
+    "description": "good for job",
+    "author": "Liuyao China",
+    "icons": {
+        "16": "img/icon128.png",
+        "32": "img/icon128.png",
+        "48": "img/icon128.png",
+        "128": "img/icon128.png"
+    },
+
+    "content_scripts": [
+        {
+            "run_at": "document_end",
+            "js":["inject.js"],
+            "css": ["inject.css"],
+            "matches": ["http://127.0.0.1/*", "*://*.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "css": ["yufaredis.css"],
+            "matches": ["*://yufaredis.21tb.com/redis/"]
+        }
+    ],
+
+    "permissions": [
+        "<all_urls>"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "addon@61linux.com",
+            "strict_min_version": "54.0"
+        }
+    }
+    
+} 

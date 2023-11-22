@@ -1,0 +1,14 @@
+.tbc_selected {
+    border: 1px solid gray;
+}
+
+.tbc-tip {
+    z-index: 10;
+    position: fixed;
+    top: 0px;
+    left: 10px;
+    right: 10px;
+    color: #017455;
+    font-size: 15px;
+    text-align: center;
+}
