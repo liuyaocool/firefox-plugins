@@ -7,11 +7,6 @@ let proxy_config;
 
 browser.runtime.onMessage.addListener((data, sender, resp) => {
     switch(data.type) {
-        case 'check_proxy':
-            data.data = 'adf';
-            resp('ok');
-            // browser.runtime.sendMessage(sender.tab.id, data);
-            break;
         case 'save_proxy':
             setLocalConfig(data.data);
             resp('保存完成');
