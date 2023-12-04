@@ -1,0 +1,52 @@
+{
+  "manifest_version": 2,
+  "name": "ly-translate",
+  "version": "1.0",
+  "description": "划词翻译-英汉互译/日译汉",
+  "icons": {
+    "16": "img/icon.png",
+    "32": "img/icon.png",
+    "48": "img/icon.png",
+    "128": "img/icon.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "translate.ffp@61linux.com",
+      "strict_min_version": "60.0"
+    }
+  },
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
+  "browser_action": {
+    "default_title": "打开配置"
+  },
+
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "js":["inject.js"],
+      "css": ["css/inject.css", "css/shake.css"],
+      "matches":["<all_urls>"]
+    }, {
+      "run_at": "document_end",
+      "js":["inject_all.js"],
+      "matches":["<all_urls>"],
+      "all_frames": true
+    }
+  ],
+
+  "background": {
+    "scripts": ["bg.js"]
+  },
+
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "webRequest",
+    "scripting",
+    "storage"
+  ]
+}

@@ -1,0 +1,84 @@
+#ly_translate_en2ch{
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    width: 260px;
+    max-height: calc(100% - 20px);
+    overflow: auto;
+    /* padding 向内占用 */
+    box-sizing: border-box;
+    z-index: 9999;
+}
+
+#ly_translate_en2ch * {
+    color: #ac1aff;
+    text-align: left;
+}
+
+#ly_translate_en2ch > div {
+    margin: 10px 10px 0 10px;
+    border-radius: 5px;
+    border: 2px white solid;
+    background-color: #0be8b8e0;
+    position: relative;
+    overflow: hidden;
+}
+
+.ly_trnslate_src, .ly_trnslate_ret {
+    padding: 5px 10px;
+}
+
+.ly_trnslate_src {
+    border-bottom: 1px solid gray;
+    font-weight: bold;
+    font-size: 18px;
+    background-color: rgb(0 255 161);
+    white-space: nowrap; /* 防止文本换行 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    text-overflow: ellipsis; /* 显示省略号 */
+    padding-right: 39px;
+}
+
+.ly_trnslate_ret {
+    font-size: 13px;
+}
+
+.ly_trnslate_ret > p:nth-of-type(1) {
+    font-weight: bold;
+    border-bottom: 1px solid #d10d83;
+}
+
+.ly_trnslate_ret span {
+    padding: 2px 5px;
+    margin: 3px 2px 0 0;
+    /*padding: 2px 5px;*/
+    background: #00000090;
+    color: white !important;
+    border-radius: 6px;
+    display: inline-block;
+    /*word-wrap: initial;*/
+}
+
+.ly_trnslate_close {
+    position: absolute;
+    font-size: 12px;
+    top: 3px;
+    right: 3px;
+    color: red;
+    cursor: pointer;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.buling {
+    animation: 100ms 2 shake;
+}
+
+p {
+    margin: 0 !important;
+    border-bottom: 1px solid #8080806e;
+}
