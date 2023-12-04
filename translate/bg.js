@@ -1,5 +1,5 @@
 browser.browserAction.onClicked.addListener((tab) => {
-    // chrome.runtime.openOptionsPage();
+    browser.tabs.create({url: "options.html"});
 });
 
 browser.runtime.onMessage.addListener((req, sender, resp) => {

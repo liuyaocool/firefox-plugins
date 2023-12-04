@@ -10,6 +10,7 @@ let divId = 'ly_translate_en2ch';
     var div = document.createElement('div');
     div.id = divId;
     document.body.append(div);
+    console.log('translate inject success');
 })()
 
 for (let i = 0; i < 0; i++) {
@@ -117,6 +118,7 @@ function enToChGoogle(str, lan) {
         default: fillBox(str, '请选择 中文或英文'); return;
     }
     let xhr = new XMLHttpRequest();
+    console.log(str);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             let trans = '';
