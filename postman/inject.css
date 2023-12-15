@@ -1,0 +1,77 @@
+.http_open_btn {
+    position: fixed;
+    right: 15px;
+    top: 17px;
+    color: #ffe000 !important;
+    z-index: 9999;
+}
+
+.http-main {
+    text-align: left;
+    height: 100%;
+    color: white;
+    position: fixed;
+    inset: 10px;
+    height: calc(100% - 30px);
+    padding: 5px;
+    z-index: 99999999999999;
+    background-color: rgba(0, 0, 0, 0.83);
+}
+.http-main, .http-main * {
+    font-size: 16px;
+    line-height: 20px;
+    vertical-align:middle;
+}
+.option {
+    background-color: #d1ba74;
+    color: black;
+}
+.http-input {
+    padding: 2px 5px !important;
+    color: #33ff00 !important;
+    background: #f7f7f712 !important;
+    /*background-color: #2e3133;*/
+    border: white 1px solid !important;
+    outline: none !important;
+}
+
+textarea[class=http-input] {
+    min-width: calc(100% - 20px);;
+    max-width: calc(100% - 20px);;
+}
+
+.http-input:focus {
+    border: #e4ff00 1px solid !important;
+}
+
+.http-button {
+    padding: 0 3px !important;
+    margin: 0;
+    color: white;
+    background-color: #02937c !important;
+    border-color: #0fffd7 #0aab90 #0aab90 #0fffd7 !important;
+    border-style: solid !important;
+    border-width: 2px;
+    cursor: pointer !important;
+}
+.http-button:hover {
+    background-color: #037765 !important;
+}
+.http-button:active {
+    background-color: #023c31 !important;
+    border-color: #0aab90 #0fffd7 #0fffd7 #0aab90 !important;
+}
+
+#http_headers >div {
+    margin: 3px 0;
+}
+#http_headers input[name=header-value] {
+    width: calc(100% - 261px);
+}
+#http_headers input[name=header-name] {
+    width: 150px;
+}
+#http_headers button {
+    cursor: pointer;
+    color: red;
+}
