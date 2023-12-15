@@ -1,7 +1,7 @@
 const STORE_KEY_CONFIG = 'ly_proxy_config';
 
-function matchProxyByUrl(url, global, prefix, suffix) {
-    return matchProxy(getUrlHostSplit(url), global, prefix, suffix);
+function matchProxyByUrl(url, config) {
+    return matchProxy(getUrlHostSplit(url), config);
 }
 
 /**
@@ -11,6 +11,11 @@ function matchProxyByUrl(url, global, prefix, suffix) {
  * @returns 
  */
 function matchProxy(hostSplit, config) {
+    if(config['exclude_localhost'] && hostSplit.length == 1) {
+        if('localhost' === hostSplit[0].split(':')[0]) {
+            return config['proxy_list'][0];;
+        }
+    }
     let i, tmp = config['suffix'];
     for (i = hostSplit.length -1; i >= 0; i--)
         if(tmp && typeof (tmp = tmp[hostSplit[i]]) == 'number')
@@ -33,6 +38,7 @@ function matchProxy(hostSplit, config) {
  *          // special...
  *      ],
  *      "global": 1 or 0,
+ *      "exclude_localhost": true,
  *      "suffix": {
  *          "com": {
  *              "baidu": 0,
@@ -83,6 +89,7 @@ function handleConfig(text) {
     return {
         "proxy_list": proxy_list,
         "global": globalIdx,
+        "exclude_localhost": config['exclude_localhost'],
         "prefix": prefix,
         "suffix": suffix
     }
@@ -91,7 +98,7 @@ function handleConfig(text) {
 function newProxyInfo(ipPort) {
     ipPort = ipPort.split(':');
     ipPort = [
-    {type: "http", host: ipPort[0], port: ipPort[1]*1},
+        {type: "http", host: ipPort[0], port: ipPort[1]*1},
         {type: "https", host: ipPort[0], port: ipPort[1]*1}
     ];
     return ipPort;

@@ -1,5 +1,5 @@
 browser.browserAction.onClicked.addListener((tab) => {
-    browser.tabs.create({url: "options.html"});
+    browser.tabs.create({url: "config.html"});
     // browser.runtime.openOptionsPage();
 });
 
@@ -27,7 +27,7 @@ function setLocalConfig(configJsonText) {
 
 browser.proxy.onRequest.addListener(req => {    
     let p = matchProxyByUrl(req.url, proxy_config);
-    console.log(p);
+    // console.log(p);
     return p;
     // return {type: "http", host: "127.0.0.1", port: 65535};
     // return {type: "direct"};

@@ -2,9 +2,12 @@
     "global_proxy": "127.0.0.1:9091",
     "special_proxy": {
         "127.0.0.1:9091": [
+            "google.com",
+            "googleapis.com",
             "openai.com"
         ]
     },
+    "exclude_localhost": true,
     "exclude_prefix": [
         "10",
         "127",
