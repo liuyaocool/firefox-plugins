@@ -8,6 +8,8 @@ const keyCodes = [
     ['ControlLeft','MetaLeft','AltLeft','Space','AltRight','PrintScreen','ControlRight',]
 ];
 
+console.log('work inject...');
+
 if(location.href.indexOf('/redis') >= 0) {
     const tbc_redis_list = ['V4_mdm(V4原6382)', 'V4_common(V4原6379)', 'V5_common(V5原6379)', 'V5_mdm(V5原6382)'];
     let tbc_redis_idx = 0;
