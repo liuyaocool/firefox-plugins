@@ -16,7 +16,7 @@
             "run_at": "document_end",
             "js":["inject.js"],
             "css": ["inject.css"],
-            "matches": ["http://127.0.0.1/*", "*://*.21tb.com/*"]
+            "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"]
         },
         {
             "run_at": "document_end",
