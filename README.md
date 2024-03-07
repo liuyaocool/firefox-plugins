@@ -32,3 +32,8 @@
 ## manifest.json
 
 https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/manifest.json
+
+# config
+
+- 禁用alt快捷键: about:config -> ui.key.menuAccessKey
+- 开发版 关闭插件签名校验: about:config -> xpinstall.signatures.required=false
