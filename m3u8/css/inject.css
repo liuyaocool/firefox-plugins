@@ -1,0 +1,148 @@
+
+#m3u8-main {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    background-color: rgba(0, 0, 0, 0.83);
+    z-index: 2147483646;
+    table-layout: fixed;
+}
+
+#m3u8-main, #m3u8-main * {
+    font-size: 16px;
+    line-height: 20px;
+    vertical-align:middle;
+}
+
+#m3u8_btns button{
+    background-color: #05825b !important;
+}
+
+.ly-m3u8-mp4 {
+    background-color: #7a860f !important;
+}
+
+.ly-m3u8-m3u8 {
+    background-color: rebeccapurple !important;
+}
+
+#m3u8-btn-open, #m3u8-main button {
+    margin: 2px;
+    padding: 1px 5px;
+    color: white;
+    outline: none;
+}
+
+#m3u8_down_list {
+    overflow: auto;
+    position: absolute;
+    left: 100px;
+    right: 10px;
+    top: 10px;
+    height: 88px;
+}
+
+#m3u8_link {
+    word-break: break-all;
+    position: absolute;
+    top: 108px;
+    min-width: calc(100% - 22px);
+    max-width: calc(100% - 22px);
+    left: 10px;
+    height: 60px;
+    line-height: 26px;
+    color: #00ff5a;
+    background-color: transparent;
+}
+#m3u8_btns {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 88px;
+    padding-top: 3px;
+}
+
+#m3u8_down_refresh {
+    /*margin-top: 5px;*/
+}
+#m3u8_down_list, #m3u8_response,
+#m3u8_segments, #m3u8_link
+{
+    border: solid 1px white;
+}
+
+#m3u8_segments iframe {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#m3u8_response {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    top: 180px;
+    width: 366px;
+    overflow: auto;
+}
+
+#m3u8_response td:nth-of-type(1) {
+    text-align: right;
+    color: #00ffc4;
+}
+#m3u8_response td:nth-of-type(2) {
+    white-space: nowrap;
+    text-align: left !important;
+}
+
+#m3u8_response note{
+    color: gray !important;
+}
+#m3u8_response a{
+    color: #009cff !important;
+}
+
+#m3u8_segments {
+    position: absolute;
+    bottom: 10px;
+    top: 180px;
+    left: 390px;
+    right: 10px;
+    overflow: auto;
+}
+
+#m3u8_segments *{
+    margin: 5px;
+    padding: 2px 6px;
+    display: inline-block;
+    text-align: center;
+    color: white;
+    background: gray;
+    width: 50px;
+}
+
+#m3u8-frame-btn {
+    display: none;
+}
+
+#ly_m3u8_top_btns {
+    position: fixed;
+    top: 0px;
+    left: calc(50% - 133px);
+    z-index: 2147483647;
+}
+
+.downloading {
+    background-color: #2c4b44 !important;
+}
+
+.downloaded {
+    background-color: #03a580 !important;
+}
+
+.stream {
+    background-color: #03c70d !important;
+}
