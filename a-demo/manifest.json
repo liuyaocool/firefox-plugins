@@ -1,0 +1,44 @@
+{
+  "manifest_version": 2,
+  "name": "ly-test",
+  "version": "1.0",
+  "description": "test",
+  "icons": {
+    "16": "img/icon.png",
+    "32": "img/icon.png",
+    "48": "img/icon.png",
+    "128": "img/icon.png"
+  },
+
+  "browser_action": {
+    "default_title": "click open config"
+  },
+
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "js":["inject.js"],
+      "css": ["inject.css"],
+      "matches":["<all_urls>"]
+    }
+  ],
+
+  "background": {
+    "scripts": ["bg.js"]
+  },
+
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "webRequest",
+    "scripting",
+    "storage"
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "demo.ffp@61linux.com",
+      "strict_min_version": "91.1.0"
+    }
+  }
+}
