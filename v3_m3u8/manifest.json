@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ly-m3u82",
+  "name": "ly-v3_m3u8",
   "version": "1.0",
-  "description": "m3u8",
+  "description": "v3 m3u8",
   "icons": {
     "16": "img/icon.png",
     "32": "img/icon.png",
@@ -30,7 +30,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "m3u82.ffp@61linux.com",
+      "id": "v3_m3u8.ffp@61linux.com",
       "strict_min_version": "91.1.0"
     }
   }
