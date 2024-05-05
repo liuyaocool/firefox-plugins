@@ -7,7 +7,6 @@ checkIfExclude(location.host, () => {
         <textarea id="m3u8_link" readonly placeholder="这里显示链接"></textarea>
         <div id="m3u8_btns">
             <button id="m3u8_down_btn">下载</button>
-            <button id="m3u8_stream_down_btn">下载(流)</button>
             <button id="m3u8_refresh_btn">刷新</button>
         </div>
         <div id="m3u8_response"></div>
@@ -23,9 +22,10 @@ checkIfExclude(location.host, () => {
         downClick(false);
     }
 
-    document.getElementById('m3u8_stream_down_btn').onclick = e => {
-        downClick(true);
-    }
+    // <button id="m3u8_stream_down_btn">下载(流)</button>
+    // document.getElementById('m3u8_stream_down_btn').onclick = e => {
+    //     downClick(true);
+    // }
 
     httpUtil = document.createElement('div');
     httpUtil.id = 'ly_m3u8_top_btns'
@@ -75,4 +75,5 @@ checkIfExclude(location.host, () => {
         }
     }
 
+    console.log("m3u8_end 插件已监听消息");
 });

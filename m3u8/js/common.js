@@ -19,6 +19,9 @@ function genPartUrl(partUri, m3u8URL) {
  *  {
  *      url: '',
  *      type: type || 'file',
+ *      headers: {
+ *          key: value
+ *      },
  *      timeout: 2000 || null;
  *      progress(e) {},
  *      success(response) {},
@@ -46,5 +49,10 @@ function ajax(options) {
         }
     };
     xhr.open("GET", options.url, true);
+    if (options.headers) {
+        for(let k in options.headers) {
+            xhr.setRequestHeader(k, options.headers[k]);
+        }
+    }
     xhr.send(null);
 }

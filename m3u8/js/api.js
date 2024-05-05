@@ -31,8 +31,12 @@ function addListenerOnMessage(listener) {
  * @param {*} options {urls: ["<all_urls>"]}
  * @param {*} types [ 'responseHeaders', 'blocking' ]
  */
-function addListenerRequestOnHeadersReceived(listener, options, types) {
+function addListenerHeadersReceived(listener, options, types) {
     browser.webRequest.onHeadersReceived.addListener(listener, options, types);
+}
+
+function addListenerBeforeRequest(listener, options, types) {
+    browser.webRequest.onBeforeRequest.addListener(listener, options, types);
 }
 
 function sendToTab(tabId, type, data) {

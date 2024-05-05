@@ -5,6 +5,7 @@ class M3u8Handler {
         this.type = 'm3u8';
         this.class = 'ly-m3u8-m3u8';
         this.m3u8RespHtml = '';
+        this.m3u8Status = -1;
         this.tsUrls = []; // 分段链接地址
         this.tsFiles = []; // ts分段文件
         this.downloadCount = 0; // 下载个数
@@ -17,24 +18,39 @@ class M3u8Handler {
         this.decryptor = new Decryptor(url);
     }
 
-    init() {
-        let that = this;
-        ajax({
-            url: that.url,
-            success: m3u8Str => {
-                if (!m3u8Str) return;
-                that.handler(m3u8Str);
-            }
-        });
+    init(m3u8Str) {
+        if (m3u8Str) {
+            this.handle(m3u8Str);
+        } else {
+            this.getM3u8Content();
+        }
         // that.fileWriter = streamSaver.createWriteStream(m3u8Map[id].name, {
         //     size: undefined, // (optional filesize) Will show progress
         //     writableStrategy: undefined, // (optional)
         //     readableStrategy: undefined  // (optional)
         // }).getWriter();
-        return that;
+        return this;
     }
 
-    handler(m3u8Str) {
+    getM3u8Content() {
+        let that = this;
+        ajax({
+            url: that.url,
+            headers: {
+                "Origin": location.origin,
+                "Referer": location.origin
+            },
+            success: m3u8Str => {
+                if (!m3u8Str) return;
+                that.handle(m3u8Str);
+            },
+            fail: status => {
+                that.m3u8Status = status;
+            }
+        });
+    }
+
+    handle(m3u8Str) {
         let m3u8URL = new URL(this.url), i = 1, tdHtm, tsUrls = [], respHtm = '<table>';
         // 提取 ts 视频片段地址
         m3u8Str.split('\n').forEach(line => {

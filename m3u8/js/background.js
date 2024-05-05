@@ -7,7 +7,7 @@ const M3U8_OK = [
 ];
 const M3U8_NOT = ['js', 'css', 'ts', 'png', 'jpg', 'jpeg', 'gif', 'ico', 'woff2', 'ts', 'svg', 'json', 'html'];
 
-addListenerRequestOnHeadersReceived(
+addListenerHeadersReceived(
     e => {
         if('GET' != e.method) return;
         let type = getContentType(e);
