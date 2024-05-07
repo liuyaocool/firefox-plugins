@@ -36,8 +36,8 @@
 }
 
 textarea[class=http-input] {
-    min-width: calc(100% - 20px);;
-    max-width: calc(100% - 20px);;
+    width: calc(100% - 20px);
+    resize: vertical;
 }
 
 .http-input:focus {
