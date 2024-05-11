@@ -19,6 +19,13 @@
     }
   ],
 
+  "action": {
+    "default_icon": {
+      "16": "img/http.png",
+      "32": "img/http.png"
+    }
+  },
+
   "permissions": [
     "webRequest"
   ],

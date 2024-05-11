@@ -10,6 +10,13 @@
     "128": "img/icon.png"
   },
 
+  "action": {
+    "default_icon": {
+      "16": "img/icon.png",
+      "32": "img/icon.png"
+    }
+  },
+
   "content_scripts": [
     {
       "run_at": "document_end",
