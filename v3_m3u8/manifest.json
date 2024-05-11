@@ -21,11 +21,7 @@
   ],
 
   "permissions": [
-    "activeTab",
-    "tabs",
-    "webRequest",
-    "scripting",
-    "storage"
+    "webRequest"
   ],
 
   "browser_specific_settings": {
