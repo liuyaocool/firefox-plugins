@@ -91,13 +91,9 @@ class M3u8Handler {
         }
     }
 
-    startDownload(isStream) {
+    startDownload() {
         for (let i = 0; i < 5; i++) {
-            if (isStream) {
-
-            } else {
                 this.downloadSer();
-            }
         }
     }
 
@@ -188,6 +184,10 @@ class M3u8Handler {
 
     serializeSave() {
         if (this.downloadCount < this.tsUrls.length) return;
+        this.save();
+    }
+
+    save() {
         let blob = new Blob(this.tsFiles, {type: 'video/MP2T'});
         let a = document.createElement('a');
         a.download = this.name;
@@ -211,7 +211,11 @@ class Mp4Handler {
             `<iframe src="${this.url}"></iframe>`;
     }
 
-    startDownload(retryNum) {
+    save(){
+        this.startDownload();
+    }
+    
+    startDownload() {
         let that = this;
         ajax({
             url: that.url,
@@ -227,9 +231,8 @@ class Mp4Handler {
                 a.href = URL.createObjectURL(blob);
                 a.click();
             },
-            fail() {
-                retryNum = retryNum || 0;
-                that.startDownload(retryNum + 1);
+            fail(statusCode) {
+                document.getElementById('m3u8_response').innerHTML = `<span>${statusCode}%</span>`;
             }
         })
     }
@@ -242,7 +245,10 @@ class VideoRecordHandler {
     showInfo() {
 
     }
-    startDownload(isStrram) {
+    save(){
+
+    }
+    startDownload() {
 
     }
     videoRecord(videoDom) {
@@ -274,5 +280,6 @@ class DemoHandler {
         this.type = 'demo';
     }
     showInfo() {}
-    startDownload(isStream) {}
+    startDownload() {}
+    save(){}
 }

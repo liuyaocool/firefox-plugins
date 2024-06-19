@@ -1,17 +1,36 @@
 const M3U8_NOT = ['js', 'css', 'ts', 'png', 'jpg', 'jpeg', 'gif', 'ico', 'woff2', 'ts', 'svg', 'json', 'html'];
 const M3U8_MAP = {};
-let httpUtil = document.createElement('div');
+const SOURCE_TYPE = {
+    M3U8: 'application/vnd.apple.mpegurl',
+    MP4: 'video/mp4',
+    WEBM: 'video/webm'
+};
+let httpUtil = document.createElement('table');
 httpUtil.id = 'm3u8-main';
 httpUtil.style.display = 'none';
 httpUtil.innerHTML = `
-    <div id="m3u8_down_list"></div>
-    <textarea id="m3u8_link" readonly placeholder="这里显示链接"></textarea>
-    <div id="m3u8_btns">
-        <button id="m3u8_down_btn">下载</button>
-        <button id="m3u8_refresh_btn">刷新</button>
-    </div>
-    <div id="m3u8_response"></div>
-    <div id="m3u8_segments"></div>
+    <tr>
+        <td style="width:60px;">
+            <button class="ly-m3u8-btn" id="m3u8_down_btn">下载</button>
+            <button class="ly-m3u8-btn" id="ly_m3u8_save_btn">保存</button>
+            <button class="ly-m3u8-btn" id="m3u8_refresh_btn">刷新</button>
+        </td>
+        <td style="height:100px;">
+            <div id="m3u8_down_list" style="height: 100%;overflow: auto;"></div>
+        </td>
+    </tr>
+    <tr style="height:36px;">
+        <td><button class="ly-m3u8-btn" id="ly_m3u8_add_btn">添加</button></td>
+        <td><input id="ly_m3u8_add_input" type="text" placeholder="输入m3u8链接添加到列表"
+            style="width: 100%;background: transparent;color: #ecc90d;outline: none;"></td>
+    </tr>
+    <tr><td colspan="2" style="height: 60px;">
+        <textarea id="m3u8_link" readonly placeholder="这里显示链接"></textarea>
+    </td></tr>
+    <tr class="border"><td colspan="2" style="position: relative;">
+        <div id="m3u8_response"></div>
+        <div id="m3u8_segments"></div>
+    </td></tr>
 `;
 document.body.appendChild(httpUtil);
 
@@ -20,7 +39,16 @@ document.getElementById('m3u8_refresh_btn').onclick = e => {
 }
 
 document.getElementById('m3u8_down_btn').onclick = e => {
-    downClick(false);
+    downClick();
+}
+
+document.getElementById('ly_m3u8_save_btn').onclick = e => {
+    saveClick();
+}
+
+document.getElementById('ly_m3u8_add_btn').onclick = e => {
+    addM3u8(document.getElementById('ly_m3u8_add_input').value, SOURCE_TYPE.M3U8);
+    m3u8BtnRefresh();
 }
 
 httpUtil = document.createElement('div');
@@ -47,11 +75,11 @@ function addM3u8(url, contentType) {
     if (M3U8_MAP[url]) return;
     console.log(url);
     switch (contentType) {
-        case 'application/vnd.apple.mpegurl':
+        case SOURCE_TYPE.M3U8:
             M3U8_MAP[url] = new M3u8Handler(url, getName()).init();
             break;
-        case 'video/mp4':
-        case 'video/webm':
+        case SOURCE_TYPE.MP4:
+        case SOURCE_TYPE.WEBM:
             M3U8_MAP[url] = new Mp4Handler(url, getName());
             break;
         default:
@@ -66,9 +94,14 @@ function getName() {
     }
 }
 
-function downClick(isStream) {
+function saveClick() {
     let link = document.getElementById('m3u8_link').value;
-    link && M3U8_MAP[link] && M3U8_MAP[link].startDownload(isStream);
+    link && M3U8_MAP[link] && M3U8_MAP[link].save();
+}
+
+function downClick() {
+    let link = document.getElementById('m3u8_link').value;
+    link && M3U8_MAP[link] && M3U8_MAP[link].startDownload();
 }
 
 function m3u8BtnRefresh() {
@@ -123,11 +156,11 @@ function handleOther(url, path) {
     singleRequest('HEAD', url, function(xhr, e) {
         let type = xhr.getResponseHeader('Content-Type');
         switch (type) {
-            case 'application/vnd.apple.mpegurl':
+            case SOURCE_TYPE.M3U8:
                 M3U8_MAP[url] = new M3u8Handler(url, getName()).init();
                 return;
-            case 'video/mp4':
-            case 'video/webm':
+            case SOURCE_TYPE.MP4:
+            case SOURCE_TYPE.WEBM:
                 M3U8_MAP[url] = new Mp4Handler(url, getName());
                 return;
             default:
