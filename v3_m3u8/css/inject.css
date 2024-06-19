@@ -130,6 +130,10 @@
     background-color: #03a580 !important;
 }
 
+.fail {
+    background-color: red !important;
+}
+
 .stream {
     background-color: #03c70d !important;
 }

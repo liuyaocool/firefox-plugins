@@ -66,11 +66,6 @@ class M3u8Handler {
         return this;
     }
 
-    nextIndex() {
-        let idx = this.downloadIndex++;
-        return (idx < this.tsUrls.length) ? idx : -1;
-    }
-
     showInfo() {
         document.getElementById('m3u8_link').value = this.url;
         document.getElementById('m3u8_response').innerHTML = this.m3u8RespHtml;
@@ -79,7 +74,7 @@ class M3u8Handler {
         }
         let segsHtm = '';
         for (let j = 0; j < this.tsUrls.length; j++) {
-            segsHtm += `<span class="${this.tsFiles[j] ? 'downloaded' : ''}">${j + 1}</span>`;
+            segsHtm += `<span class="${this.tsFiles[j] === false ? 'fail' : (this.tsFiles[j] ? 'downloaded' : '')}">${j + 1}</span>`;
         }
         document.getElementById('m3u8_segments').innerHTML = segsHtm;
         let segs = document.querySelectorAll('#m3u8_segments span');
@@ -91,9 +86,28 @@ class M3u8Handler {
         }
     }
 
+    nextIndex() {
+        let idx = this.downloadIndex++;
+        return (idx < this.tsUrls.length) ? idx : -1;
+    }
+
     startDownload() {
+        if (this.downloadIndex > 0) {
+            this.downloadFail();
+            return;
+        }
         for (let i = 0; i < 5; i++) {
                 this.downloadSer();
+        }
+    }
+
+    downloadFail() {
+        for (let i = 0; i < this.tsUrls.length; i++) {
+            if (this.tsFiles[i] === false) {
+                this.tsFiles[i] = null;
+                this.downloadPart(i);
+                this.serializeSave();
+            }
         }
     }
 
@@ -109,6 +123,7 @@ class M3u8Handler {
             if ((retryNum = retryNum || 0) < 5) {
                 that.downloadSer(index, retryNum + 1);
             } else {
+                that.tsFiles[index] = false;
                 that.downloadSer();
             }
         });
