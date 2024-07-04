@@ -26,6 +26,10 @@
     }
   },
 
+  "background": {
+    "scripts": ["bg.js"]
+  },
+
   "permissions": [
     "webRequest"
   ],
