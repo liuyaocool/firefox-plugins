@@ -24,7 +24,7 @@ if(location.href.indexOf('/redis') >= 0) {
             case 'AltRight':
                 let tbc_a = document.getElementById('result_tbody').children;
                 tbc_a = JSON.parse(JSON.parse(tbc_a[tbc_a.length-1].children[2].innerText)).jdbcUrl.split('//')[1].split(':');
-                window.open(`http://127.0.0.1:8083/static/html/db/ssh.html#${tbc_a[0]}:${tbc_a[1].split('/').join(':')}`);
+                window.open(`http://172.21.1.6:8083/static/html/db/ssh.html#${tbc_a[0]}:${tbc_a[1].split('/').join(':')}`);
                 ev.preventDefault();
                 break;
             case "Enter": document.getElementById('btn_query').click(); break;

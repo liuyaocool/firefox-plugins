@@ -12,6 +12,7 @@ document.getElementById('ly-postman-toggle').onclick = e => {
 
 httpUtil = document.createElement('form');
 httpUtil.id = postmanId;
+httpUtil.style.display = 'none'
 httpUtil.innerHTML = `
     <input type="text" name="url" spellcheck="false" class="http-input" style="width: calc(100% - 196px);">
     <select name="method" class="http-input">
