@@ -59,13 +59,15 @@ function showTabsPanel(show) {
                 case 'ArrowUp': selectTab(-1); break;
                 case 'ArrowDown': selectTab(1); break;
                 case 'Enter': chooseTab(); break;
-                default: console.log(e.code); break;
+                default: console.log(e.code); return;
             }
+            e.preventDefault();
         }
     }
     document.getElementById(tabsDivId).style.display = show === true ? '' : 'none';
     if (show) {
         document.getElementById(tabsInputId).focus();
+        document.getElementById(tabsInputId).value = '';
     }
     // get tab list
     sendToBackground(GLOBAL.METHOD.TABS, null);
@@ -79,12 +81,11 @@ function setTabList(tabList) {
 
 function chooseTab() {
     let choose = document.querySelectorAll(`#${tabsId} > .${selectClass}`)[0];
-    if (!choose) {
-        return;
-    }
+    if (!choose) return;
     let tabc = tabs[choose.getAttribute('tabIdx')*1];
     // jump to tab
     sendToBackground(GLOBAL.METHOD.GOTO_TAB, tabc.id);
+    showTabsPanel(false);
 }
 
 function selectTab(offset) {
@@ -168,5 +169,35 @@ function matchKey(str, key) {
 }
 
 
+/**
+ * 匹配字符串
+ * @param str 原字符串
+ * @param key 空格分割的多个关键字
+ * @returns {boolean} true:匹配上了, false:未匹配上
+ */
+function matchTab(tab, key) {
+    key = key.split(' ');
+    let str = tab.title + tab.url;
+    let titlee = tab.title, urll = tab.url;
+    for (let i = 0; i < key.length; i++) {
+        if (titlee.indexOf(key[i])) {
+            
+        }
+        if (!str.indexOf(key) < 0) {
+            return false;
+        }
+    }
+
+    let matchedCount = 0;
+    for (let keyI = 0, ki = 0; keyI < key.length && ki < str.length; keyI++) {
+        while (ki < str.length) {
+            if (key[keyI] == str[ki++]) {
+                matchedCount++;
+                break;
+            }
+        }
+    }
+    return matchedCount == key.length;
+}
 
 console.log('hotkey injected');

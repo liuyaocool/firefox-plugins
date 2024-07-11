@@ -23,6 +23,7 @@
 }
 
 #ly-hotkey-tabs-input {
+    color: white;
     width: 100%;
     font-size: 16px;
     padding: 5px 10px;
@@ -48,6 +49,7 @@
     font-size: 13px;
 }
 .ly-hotkey-tabs-name {
+    color: white;
     
 }
 .ly-hotkey-tabs-url {
