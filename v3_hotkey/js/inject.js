@@ -103,24 +103,33 @@ function selectTab(offset) {
 
 function fillTabsList(key) {
     console.log(tabs);
-    let tabListDom = '', tabInnerDom;
+    let tabDomList = [], tabInnerDom, hasSelect = false, firstDom;
     for (let i = 0, j = 0; i < tabs.length && j < 11; i++) {
         if (!key) {
-            tabInnerDom = [tabs[i].title, tabs[i].url];
+            tabInnerDom = [tabs[i].title, tabs[i].url, i];
         } else if (matchKey(tabs[i].title, key)) {
-            tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url];
+            tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i];
         } else if (matchKey(tabs[i].url, key)) {
-            tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key)];
+            tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i];
         } else {
             continue;
         }
-        j++;
-        tabListDom += `<div class="${tabsPrefix}tab ${tabsSelectIndex == i ? (basePrefix + 'select') : ''}" tabIdx=${i}>
+        if (!firstDom) firstDom = tabInnerDom;
+        hasSelect = hasSelect || tabsSelectIndex == i;
+        tabDomList.push(`<div class="${tabsPrefix}tab ${tabsSelectIndex == i ? selectClass : ''}" tabIdx=${i}>
             <div class="${tabsPrefix}name">${tabInnerDom[0]}</div>
             <div class="${tabsPrefix}url">${tabInnerDom[1]}</div>
-        </div>`;
+        </div>`);
+        j++;
     }
-    document.getElementById(tabsId).innerHTML = tabListDom;
+    if (!hasSelect) {
+        tabDomList[0] = `<div class="${tabsPrefix}tab ${selectClass}" tabIdx=${firstDom[2]}>
+            <div class="${tabsPrefix}name">${firstDom[0]}</div>
+            <div class="${tabsPrefix}url">${firstDom[1]}</div>
+        </div>`;
+        tabsSelectIndex = firstDom[2];
+    }
+    document.getElementById(tabsId).innerHTML = tabDomList.join('');
 }
 
 

@@ -1,5 +1,5 @@
 mkf_abpath	:= $(patsubst %Makefile, %, $(abspath $(MAKEFILE_LIST)))
-targets		:= proxy translate work m3u8 v3_m3u8 v3_postman
+targets		:= proxy translate work m3u8 v3_m3u8 v3_postman v3_hotkey
 
 help:
 	@$(foreach target,$(targets),echo "--- make _$(target) ---";)
