@@ -79,7 +79,7 @@ function showTabsSearchPanel(show) {
         tabPanel.style.display = 'none';
         tabPanel.classList.add(boxClass);
         tabPanel.innerHTML = `
-            <input id="${tabsInputId}" type="text" placeholder="input for filter tabs">
+            <input id="${tabsInputId}" type="text" placeholder="input for filter tabs ('%' start support discontinuous)">
             <div id="${tabsSearchId}"></div>`;
         document.body.appendChild(tabPanel);
         document.getElementById(tabsInputId).oninput = e => fillTabsList(tabsSearchId, 10, e.target.value);
@@ -136,10 +136,17 @@ function fillTabsList(containerId, maxLen, key) {
     for (let i = 0, j = 0; i < tabs.length && j < maxLen; i++) {
         if (!key) {
             tabInnerDom = [tabs[i].title, tabs[i].url, i];
-        } else if (matchKey(tabs[i].title, key)) {
-            tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i];
-        } else if (matchKey(tabs[i].url, key)) {
-            tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i];
+        } else if (key.startsWith('%')){
+            key = key.substring(1);
+            if(matchKey(tabs[i].title, key)) {
+                tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i];
+            } else if (matchKey(tabs[i].url, key)) {
+                tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i];
+            } else{
+                continue;
+            }
+        } else if (matchAndHighlightTab(tabs[i], key)) {
+            tabInnerDom = [tabs[i].titleHtml, tabs[i].urlHtml, i];
         } else {
             continue;
         }
@@ -151,7 +158,7 @@ function fillTabsList(containerId, maxLen, key) {
         </div>`);
         j++;
     }
-    if (!hasSelect) {
+    if (!hasSelect && firstDom) {
         tabDomList[0] = `<div class="${tabsPrefix}tab ${selectClass}" tabIdx=${firstDom[2]}>
             <div class="${tabsPrefix}name">${firstDom[0]}</div>
             <div class="${tabsPrefix}url">${firstDom[1]}</div>
@@ -205,19 +212,55 @@ function matchKey(str, key) {
  */
 function matchAndHighlightTab(tab, key) {
     key = key.split(' ');
-    let titlee = tab.title, urll = tab.url, ttok, urlok;
+    // [key, index]
+    let keyTtIdx = [], keyUrlIdx = [], tt, urll;
     for (let i = 0; i < key.length; i++) {
-        ttok = titlee.indexOf(key[i]) < 0;
-        urlok = urll.indexOf(key[i]) < 0;
-        if (!ttok && !urlok) {
+        if (!key[i]) 
+            continue;
+        tt = tab.title.indexOf(key[i]);
+        urll = tab.url.indexOf(key[i]);
+        if (tt < 0 && urll < 0) {
             return false;
         }
-        // 只需要替换第一个匹配的就好了
-
-
+        if (tt >= 0) {
+            keyTtIdx.push([key[i], tt])            
+        }
+        if (urll >= 0) {
+            keyUrlIdx.push([key[i], urll]);            
+        }
     }
-    tab.titleHtml = titlee;
-    tab.urlHtmk = urll;
+    tab.titleHtml = getHighLight(keyTtIdx, tab.title);
+    tab.urlHtml = getHighLight(keyUrlIdx, tab.url);
+    return true;
+}
+
+/**
+ * 
+ * @param {Array} keyIdx [ [key, index], ... ]
+ * @param {string} str 
+ * @returns high light str
+ */
+function getHighLight(keyIdx, str) {
+    if (!keyIdx || keyIdx.length <= 0 || !str)
+        return str;
+    keyIdx.sort((a, b) => a[1] - b[1]);
+    // 如果有重叠 合并
+    let merge = []; // [start, end]
+    for (let i = 0, startIdx; i < keyIdx.length; i++) {
+        if ((key = keyIdx[i])[1] < 0)
+            continue;
+        startIdx = i;
+        while(keyIdx[i+1] && (key[1] + key[0].length) >= keyIdx[i+1][1]) {
+            i++;
+        }
+        merge.push([keyIdx[startIdx][1], keyIdx[i][1] + keyIdx[i][0].length]);
+    }
+    let htmlStr = str.substring(0, merge[0][0]);
+    for (let i = 0; i < merge.length; i++) {
+        //如果换行 会有空格
+        htmlStr += `<span class="${basePrefix}high-light">${str.substring(merge[i][0], merge[i][1])}</span>${str.substring(merge[i][1], merge[i+1] ? merge[i+1][0] : str.length)}`;
+    }
+    return htmlStr;
 }
 
 console.log('hotkey injected');
