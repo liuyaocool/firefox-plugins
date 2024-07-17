@@ -9,7 +9,7 @@
 .ly-hotkey-box {
     position: fixed;
     top: 20px;
-    width: 500px;
+    width: 600px;
     max-width: 90%;
     left: 0;
     right: 0;
@@ -48,7 +48,22 @@
 .ly-hotkey-tabs-tab {
     padding: 5px;
     font-size: 13px;
+    position: relative;
 }
+
+.ly-hotkey-tabs-tab img {
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.ly-hotkey-tabs-name, .ly-hotkey-tabs-url{
+    padding-left: 36px;
+}
+
 .ly-hotkey-tabs-name {
     color: white;
     

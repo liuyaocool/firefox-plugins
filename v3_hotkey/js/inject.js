@@ -132,27 +132,29 @@ function focusTab(containerId, offset) {
 }
 
 function fillTabsList(containerId, maxLen, key) {
+    // tabInnerDom[titleHtml, urlHtml, index, icon]
     let tabDomList = [], tabInnerDom, hasSelect = false, firstDom;
     for (let i = 0, j = 0; i < tabs.length && j < maxLen; i++) {
         if (!key) {
-            tabInnerDom = [tabs[i].title, tabs[i].url, i];
+            tabInnerDom = [tabs[i].title, tabs[i].url, i, tabs[i].favIconUrl];
         } else if (key.startsWith('%')){
             key = key.substring(1);
             if(matchKey(tabs[i].title, key)) {
-                tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i];
+                tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i, tabs[i].favIconUrl];
             } else if (matchKey(tabs[i].url, key)) {
-                tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i];
+                tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i, tabs[i].favIconUrl];
             } else{
                 continue;
             }
         } else if (matchAndHighlightTab(tabs[i], key)) {
-            tabInnerDom = [tabs[i].titleHtml, tabs[i].urlHtml, i];
+            tabInnerDom = [tabs[i].titleHtml, tabs[i].urlHtml, i, tabs[i].favIconUrl];
         } else {
             continue;
         }
         if (!firstDom) firstDom = tabInnerDom;
         hasSelect = hasSelect || tabsSelectIndex == i;
         tabDomList.push(`<div class="${tabsPrefix}tab ${tabsSelectIndex == i ? selectClass : ''}" tabIdx=${i}>
+            <img src="${tabInnerDom[3] || GLOBAL.IMG.TAB_ICON_WHITE}"/>
             <div class="${tabsPrefix}name">${tabInnerDom[0]}</div>
             <div class="${tabsPrefix}url">${tabInnerDom[1]}</div>
         </div>`);
@@ -160,6 +162,7 @@ function fillTabsList(containerId, maxLen, key) {
     }
     if (!hasSelect && firstDom) {
         tabDomList[0] = `<div class="${tabsPrefix}tab ${selectClass}" tabIdx=${firstDom[2]}>
+            <img src="${firstDom[3] || GLOBAL.IMG.TAB_ICON_WHITE}"/>
             <div class="${tabsPrefix}name">${firstDom[0]}</div>
             <div class="${tabsPrefix}url">${firstDom[1]}</div>
         </div>`;

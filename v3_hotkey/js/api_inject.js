@@ -7,3 +7,7 @@ function addMessageListener(listener) {
 function sendToBackground(method, data) {
     browser.runtime.sendMessage({method: method, data: data}, {});
 }
+
+function getSourceUrl(path) {
+    return browser.runtime.getURL(path); 
+}
