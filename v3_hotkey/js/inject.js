@@ -214,14 +214,14 @@ function matchAndHighlightTab(tab, key) {
     key = key.toLowerCase().split(' ');
     // [key, index]
     let keyTtIdx = [], keyUrlIdx = [], 
-        tt = tab.title.toLowerCase(), 
-        urll = tab.url.toLowerCase(), 
-        ttIdx, urlIdx;
+        ttStr = tab.title.toLowerCase(), 
+        urlStr = tab.url.toLowerCase(), 
+        tt, urll;
     for (let i = 0; i < key.length; i++) {
         if (!key[i]) 
             continue;
-        tt = tt.indexOf(key[i]);
-        urll = urll.indexOf(key[i]);
+        tt = ttStr.indexOf(key[i]);
+        urll = urlStr.indexOf(key[i]);
         if (tt < 0 && urll < 0) {
             return false;
         }
