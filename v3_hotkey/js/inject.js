@@ -205,20 +205,23 @@ function matchKey(str, key) {
 
 
 /**
- * 匹配字符串
+ * 匹配字符串 不区分大小写
  * @param str 原字符串
  * @param key 空格分割的多个关键字
  * @returns {boolean} true:匹配上了, false:未匹配上
  */
 function matchAndHighlightTab(tab, key) {
-    key = key.split(' ');
+    key = key.toLowerCase().split(' ');
     // [key, index]
-    let keyTtIdx = [], keyUrlIdx = [], tt, urll;
+    let keyTtIdx = [], keyUrlIdx = [], 
+        tt = tab.title.toLowerCase(), 
+        urll = tab.url.toLowerCase(), 
+        ttIdx, urlIdx;
     for (let i = 0; i < key.length; i++) {
         if (!key[i]) 
             continue;
-        tt = tab.title.indexOf(key[i]);
-        urll = tab.url.indexOf(key[i]);
+        tt = tt.indexOf(key[i]);
+        urll = urll.indexOf(key[i]);
         if (tt < 0 && urll < 0) {
             return false;
         }
