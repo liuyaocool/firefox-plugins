@@ -12,16 +12,17 @@
     "content_scripts": [
         {
             "run_at": "document_end",
-            "js": [
-                "js/api.js",
-                "js/inject.js"
-            ],
-            "css": [
-                "inject.css"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
+            "match_origin_as_fallback": true,
+            "all_frames": true,
+            "js": [ "js/constant.js", "js/api_inject.js", "js/inject_all.js" ],
+            "matches": ["<all_urls>"]
+        },
+        {
+            "run_at": "document_end",
+            "match_origin_as_fallback": true,
+            "js": ["js/inject.js"],
+            "css": ["inject.css"],
+            "matches": ["<all_urls>"]
         }
     ],
     "action": {
@@ -32,7 +33,8 @@
     },
     "background": {
         "scripts": [
-            "js/api.js",
+            "js/constant.js",
+            "js/api_bg.js",
             "js/bg.js"
         ]
     },

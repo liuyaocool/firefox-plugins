@@ -6,16 +6,17 @@
     background-color: #4f4c4c !important;
 }
 
-#ly-hotkey-tabs-div {
+.ly-hotkey-box {
     position: fixed;
     top: 20px;
-    width: 80%;
-    left: 10%;
-    max-height: 90%;
+    width: 500px;
+    max-width: 90%;
+    left: 0;
+    right: 0;
+    margin: auto;
     padding: 10px;
     border-radius: 5px;
-    /* background-color: rgba(255,255,255,0.6); */
-    background-color:  hsla(240, 2%, 26%, 0.77) !important;
+    background-color: hsla(240, 2%, 26%, 0.77) !important;
     backdrop-filter: blur(16px);
     /* box-shadow: 1px 1px 1px -1px rgba(0, 0, 0, 0.4); */
     box-shadow: 2px 2px 1px -1px rgba(0, 0, 0, 0.5);
@@ -54,5 +55,8 @@
 }
 .ly-hotkey-tabs-url {
     color: gray;
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 显示省略号 */
 }
 

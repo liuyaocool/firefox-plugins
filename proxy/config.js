@@ -95,3 +95,5 @@ function showMsg(type, str) {
         case "E": msg.style.color = "#ff3333fa"; break;
     }
 }
+
+console.log('config js load ok');

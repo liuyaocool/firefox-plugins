@@ -1,65 +1,94 @@
-document.addEventListener("keydown", function (ev) {
-    switch(ev.code) {
-        case 'Escape': escPress(); break;
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        escPress();
     }
-    if (!ev.altKey) {
-        return;
-    }
-    funckey1Events(ev.code);
-})
+});
+window.addEventListener('blur', function() {
+    // 窗口失去焦点
+    escPress();
+});
 
 addMessageListener((req, sender, resp) => {
     switch (req.method) {
-        case GLOBAL.METHOD.TABS: setTabList(req.data); break;
+        case GLOBAL.METHOD.TABS: setTabList(tabsSearchId, 10, req.data); break;
+        case GLOBAL.METHOD.TABS_HIS: setTabHisList(req.data); break;
+        case GLOBAL.KEY.ESC: escPress(); break;
+        case GLOBAL.KEY.SEARCH_PANEL: showTabsSearchPanel(true); break;
+        case GLOBAL.KEY.SWITCH_PANEL_DOWN: showTabsSwitchPanel(1); break;
+        case GLOBAL.KEY.SWITCH_PANEL_UP: showTabsSwitchPanel(-1); break;
+        case GLOBAL.KEY.SWITCH_PANEL_GOTO: gotoTabsSwitchPanel(); break;
         default: break;
     }
 })
 
-/**
-    ['Escape','F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','Delete'],
-    ['Backquote','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9','Digit0','Minus','Equal','Backspace'],
-    ['Tab','KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP','BracketLeft','BracketRight','Backslash'],
-    ['CapsLock','KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon','Quote','Enter'],
-    ['ShiftLeft','KeyZ','KeyX','KeyC','KeyV','KeyB','KeyN','KeyM','Comma','Period','Slash','ShiftRight'],
-    ['ControlLeft','MetaLeft','AltLeft','Space','AltRight','PrintScreen','ControlRight',]
- */
-
 const basePrefix = 'ly-hotkey-';
 const selectClass = `${basePrefix}select`;
+const boxClass = `${basePrefix}box`;
 const tabsPrefix = `${basePrefix}tabs-`;
 
-function funckey1Events(code) {
-    switch(code) {
-        case 'KeyO': showTabsPanel(true); break;
-    }
-}
-
 function escPress() {
-    showTabsPanel(false);
+    showTabsSearchPanel(false);
+    showTabsSwitchPanel(0);
 }
 
-const tabsId = `${tabsPrefix}id`;
-const tabsInputId = `${tabsPrefix}input`;
+const tabsSearchId = `${tabsPrefix}sid`;
+const tabsSwitchId = `${tabsPrefix}swid`;
 let tabs = [];
 let tabsSelectIndex = 0;
 
-function showTabsPanel(show) {
+function gotoTabsSwitchPanel() {
+    jumpToTab(tabsSwitchId);
+    showTabsSwitchPanel(0);
+}
+function showTabsSwitchPanel(offset) {
+    if (!document.getElementById(tabsSwitchId)) {
+        let tabPanel = document.createElement('div');
+        tabPanel.id = tabsSwitchId;
+        tabPanel.style.display = 'none';
+        tabPanel.classList.add(boxClass);
+        document.body.appendChild(tabPanel);
+    }
+    let containerDom =  document.getElementById(tabsSwitchId);
+    if (0 == offset) {
+        containerDom.style.display = 'none';
+        return;
+    }
+    if ('none' == containerDom.style.display) {
+        containerDom.style.display = '';
+        // get tab list
+        sendToBackground(GLOBAL.METHOD.TABS_HIS, null);
+    } else{
+        focusTab(tabsSwitchId, offset);
+    }
+}
+
+function setTabHisList(tabList) {
+    // todo sort
+    // lastAccessed 上次访问时间
+    tabList.sort((a, b) => b.lastAccessed - a.lastAccessed);
+    tabList.shift();
+    setTabList(tabsSwitchId, 5, tabList);
+}
+
+function showTabsSearchPanel(show) {
+    const tabsInputId = `${tabsPrefix}input`;
     const tabsDivId = `${tabsPrefix}div`;
     if (!document.getElementById(tabsDivId)) {
         let tabPanel = document.createElement('div');
         tabPanel.id = tabsDivId;
         tabPanel.style.display = 'none';
+        tabPanel.classList.add(boxClass);
         tabPanel.innerHTML = `
             <input id="${tabsInputId}" type="text" placeholder="input for filter tabs">
-            <div id="${tabsId}"></div>`;
+            <div id="${tabsSearchId}"></div>`;
         document.body.appendChild(tabPanel);
-        document.getElementById(tabsInputId).oninput = e => fillTabsList(e.target.value);
+        document.getElementById(tabsInputId).oninput = e => fillTabsList(tabsSearchId, 10, e.target.value);
         document.getElementById(tabsInputId).onkeydown = e=> {
             switch(e.code) {
-                case 'ArrowUp': selectTab(-1); break;
-                case 'ArrowDown': selectTab(1); break;
-                case 'Enter': chooseTab(); break;
-                default: console.log(e.code); return;
+                case 'ArrowUp': focusTab(tabsSearchId, -1); break;
+                case 'ArrowDown': focusTab(tabsSearchId, 1); break;
+                case 'Enter': jumpToTab(tabsSearchId); break;
+                default: return;
             }
             e.preventDefault();
         }
@@ -68,30 +97,30 @@ function showTabsPanel(show) {
     if (show) {
         document.getElementById(tabsInputId).focus();
         document.getElementById(tabsInputId).value = '';
+        // get tab list
+        sendToBackground(GLOBAL.METHOD.TABS, null);
     }
-    // get tab list
-    sendToBackground(GLOBAL.METHOD.TABS, null);
 }
 
-function setTabList(tabList) {
+function setTabList(containerId, maxLen, tabList) {
     tabs = tabList;
     tabsSelectIndex = 0;
-    fillTabsList();
+    fillTabsList(containerId, maxLen);
 }
 
-function chooseTab() {
-    let choose = document.querySelectorAll(`#${tabsId} > .${selectClass}`)[0];
+function jumpToTab(containerId) {
+    let choose = document.querySelectorAll(`#${containerId} > .${selectClass}`)[0];
     if (!choose) return;
     let tabc = tabs[choose.getAttribute('tabIdx')*1];
     // jump to tab
     sendToBackground(GLOBAL.METHOD.GOTO_TAB, tabc.id);
-    showTabsPanel(false);
+    escPress();
 }
 
-function selectTab(offset) {
+function focusTab(containerId, offset) {
     if (!offset || 0 == offset)
         return;
-    let tabDoms = document.querySelectorAll(`#${tabsId} > .${tabsPrefix}tab`);
+    let tabDoms = document.querySelectorAll(`#${containerId} > .${tabsPrefix}tab`);
     let j = 0;
     for (let i = tabDoms.length-1; i >= 0; i--) {
         if (tabDoms[i].classList.contains(selectClass)) j = i;
@@ -102,10 +131,9 @@ function selectTab(offset) {
     tabDoms[j].classList.add(selectClass);
 }
 
-function fillTabsList(key) {
-    console.log(tabs);
+function fillTabsList(containerId, maxLen, key) {
     let tabDomList = [], tabInnerDom, hasSelect = false, firstDom;
-    for (let i = 0, j = 0; i < tabs.length && j < 11; i++) {
+    for (let i = 0, j = 0; i < tabs.length && j < maxLen; i++) {
         if (!key) {
             tabInnerDom = [tabs[i].title, tabs[i].url, i];
         } else if (matchKey(tabs[i].title, key)) {
@@ -130,7 +158,7 @@ function fillTabsList(key) {
         </div>`;
         tabsSelectIndex = firstDom[2];
     }
-    document.getElementById(tabsId).innerHTML = tabDomList.join('');
+    document.getElementById(containerId).innerHTML = tabDomList.join('');
 }
 
 
@@ -175,29 +203,21 @@ function matchKey(str, key) {
  * @param key 空格分割的多个关键字
  * @returns {boolean} true:匹配上了, false:未匹配上
  */
-function matchTab(tab, key) {
+function matchAndHighlightTab(tab, key) {
     key = key.split(' ');
-    let str = tab.title + tab.url;
-    let titlee = tab.title, urll = tab.url;
+    let titlee = tab.title, urll = tab.url, ttok, urlok;
     for (let i = 0; i < key.length; i++) {
-        if (titlee.indexOf(key[i])) {
-            
-        }
-        if (!str.indexOf(key) < 0) {
+        ttok = titlee.indexOf(key[i]) < 0;
+        urlok = urll.indexOf(key[i]) < 0;
+        if (!ttok && !urlok) {
             return false;
         }
-    }
+        // 只需要替换第一个匹配的就好了
 
-    let matchedCount = 0;
-    for (let keyI = 0, ki = 0; keyI < key.length && ki < str.length; keyI++) {
-        while (ki < str.length) {
-            if (key[keyI] == str[ki++]) {
-                matchedCount++;
-                break;
-            }
-        }
+
     }
-    return matchedCount == key.length;
+    tab.titleHtml = titlee;
+    tab.urlHtmk = urll;
 }
 
 console.log('hotkey injected');

@@ -7,7 +7,13 @@ browser.action.onClicked.addListener((tab) => {
 });
 
 addMessageListener((req, sender, resp) => {
+    if (GLOBAL.KEY[req.method]) {
+        // forwardToActiveTab(req);
+        sendMessageToTab(sender.tab.id, req);
+        return;
+    }
     switch (req.method) {
+        case GLOBAL.METHOD.TABS_HIS: 
         case GLOBAL.METHOD.TABS: 
             getTabs(req.data).then(res => {
                 req.data = res;
