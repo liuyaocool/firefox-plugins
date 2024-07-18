@@ -28,6 +28,12 @@ document.addEventListener("keydown", function (ev) {
                 break;
             }
             return;
+        case 'd': 
+            if (ev.ctrlKey) {
+                sendToBackground(GLOBAL.KEY.DUPLICATE_TAB, null);
+                break;
+            }
+            return;
         case 'Tab':
             if (ev.altKey) {
                 sendToBackground(GLOBAL.KEY.SWITCH_PANEL_DOWN, null);

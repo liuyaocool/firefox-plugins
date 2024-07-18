@@ -13,6 +13,7 @@ addMessageListener((req, sender, resp) => {
         case GLOBAL.METHOD.TABS: setTabList(tabsSearchId, 10, req.data); break;
         case GLOBAL.METHOD.TABS_HIS: setTabHisList(req.data); break;
         case GLOBAL.KEY.ESC: escPress(); break;
+        case GLOBAL.KEY.DUPLICATE_TAB: window.open(location.href); break;
         case GLOBAL.KEY.SEARCH_PANEL: showTabsSearchPanel(true); break;
         case GLOBAL.KEY.SWITCH_PANEL_DOWN: showTabsSwitchPanel(1); break;
         case GLOBAL.KEY.SWITCH_PANEL_UP: showTabsSwitchPanel(-1); break;

@@ -6,6 +6,7 @@ const GLOBAL = {
     },
     KEY: {
         ESC: "ESC",
+        DUPLICATE_TAB: "DUPLICATE_TAB",
         SEARCH_PANEL: "SEARCH_PANEL",
         SWITCH_PANEL_UP: "SWITCH_PANEL_UP",
         SWITCH_PANEL_DOWN: "SWITCH_PANEL_DOWN",
