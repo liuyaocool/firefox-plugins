@@ -27,8 +27,8 @@
     ],
     "action": {
         "default_icon": {
-            "16": "img/http.png",
-            "32": "img/http.png"
+            "16": "img/icon.png",
+            "32": "img/icon.png"
         }
     },
     "background": {

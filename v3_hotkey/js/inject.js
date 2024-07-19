@@ -68,7 +68,7 @@ function setTabHisList(tabList) {
     // lastAccessed 上次访问时间
     tabList.sort((a, b) => b.lastAccessed - a.lastAccessed);
     tabList.shift();
-    setTabList(tabsSwitchId, 5, tabList);
+    setTabList(tabsSwitchId, 10, tabList);
 }
 
 function showTabsSearchPanel(show) {
