@@ -1,9 +1,6 @@
 
 browser.action.onClicked.addListener((tab) => {
-    // browser.action.disable(tab.id);
-    // console.log(tab.url);
-    // browser.tabs.sendMessage(tab.id, {method: 'show'});
-    
+    browser.tabs.create({url: "config.html"});
 });
 
 addMessageListener((req, sender, resp) => {

@@ -10,7 +10,7 @@ window.addEventListener('blur', function() {
 
 addMessageListener((req, sender, resp) => {
     switch (req.method) {
-        case GLOBAL.METHOD.TABS: setTabList(tabsSearchId, 10, req.data); break;
+        case GLOBAL.METHOD.TABS: setTabSearchList(req.data); break;
         case GLOBAL.METHOD.TABS_HIS: setTabHisList(req.data); break;
         case GLOBAL.KEY.ESC: escPress(); break;
         case GLOBAL.KEY.DUPLICATE_TAB: window.open(location.href); break;
@@ -26,40 +26,37 @@ const basePrefix = 'ly-hotkey-';
 const selectClass = `${basePrefix}select`;
 const boxClass = `${basePrefix}box`;
 const tabsPrefix = `${basePrefix}tabs-`;
+const tabsDataId = `${tabsPrefix}data_id`;
 
 function escPress() {
     showTabsSearchPanel(false);
     showTabsSwitchPanel(0);
 }
 
-const tabsSearchId = `${tabsPrefix}sid`;
-const tabsSwitchId = `${tabsPrefix}swid`;
 let tabs = [];
 let tabsSelectIndex = 0;
 
 function gotoTabsSwitchPanel() {
-    jumpToTab(tabsSwitchId);
+    jumpToTab();
     showTabsSwitchPanel(0);
 }
+
 function showTabsSwitchPanel(offset) {
+    const tabsSwitchId = tabsDataId;
+    if (0 == offset) {
+        let a = document.getElementById(tabsSwitchId);
+        if (a) a.remove();
+        return;
+    }
     if (!document.getElementById(tabsSwitchId)) {
         let tabPanel = document.createElement('div');
         tabPanel.id = tabsSwitchId;
-        tabPanel.style.display = 'none';
         tabPanel.classList.add(boxClass);
         document.body.appendChild(tabPanel);
-    }
-    let containerDom =  document.getElementById(tabsSwitchId);
-    if (0 == offset) {
-        containerDom.style.display = 'none';
-        return;
-    }
-    if ('none' == containerDom.style.display) {
-        containerDom.style.display = '';
         // get tab list
         sendToBackground(GLOBAL.METHOD.TABS_HIS, null);
     } else{
-        focusTab(tabsSwitchId, offset);
+        focusTab(offset);
     }
 }
 
@@ -70,49 +67,50 @@ function setTabHisList(tabList) {
     // tabList.shift();
     tabs = tabList;
     tabsSelectIndex = 1;
-    fillTabsList(tabsSwitchId, 10);
+    fillTabsList(10);
 }
 
 function showTabsSearchPanel(show) {
-    const tabsInputId = `${tabsPrefix}input`;
-    const tabsDivId = `${tabsPrefix}div`;
-    if (!document.getElementById(tabsDivId)) {
+    const tabsInputId = `3c88a577464c4f839d1f56fd0b1c22f2`;
+    const tabsPanelId = 'f2ff4831683d499ca8aba45ef9355b51';
+    if (!show) {
+        let a = document.getElementById(tabsPanelId);
+        if (a) a.remove();
+        return;
+    }
+    if (!document.getElementById(tabsPanelId)) {        
         let tabPanel = document.createElement('div');
-        tabPanel.id = tabsDivId;
-        tabPanel.style.display = 'none';
+        tabPanel.id = tabsPanelId;
         tabPanel.classList.add(boxClass);
         tabPanel.innerHTML = `
-            <input id="${tabsInputId}" type="text" placeholder="input for filter tabs ('%' start support discontinuous)">
-            <div id="${tabsSearchId}"></div>`;
+            <input id="${tabsInputId}" class="ly-hotkey-tabs-input" type="text" placeholder="input for filter tabs ('%' start support discontinuous)">
+            <div id="${tabsDataId}"></div>`;
         document.body.appendChild(tabPanel);
-        document.getElementById(tabsInputId).oninput = e => fillTabsList(tabsSearchId, 10, e.target.value);
+        document.getElementById(tabsInputId).oninput = e => fillTabsList(10, e.target.value);
         document.getElementById(tabsInputId).onkeydown = e=> {
             switch(e.code) {
-                case 'ArrowUp': focusTab(tabsSearchId, -1); break;
-                case 'ArrowDown': focusTab(tabsSearchId, 1); break;
-                case 'Enter': jumpToTab(tabsSearchId); break;
+                case 'ArrowUp': focusTab(-1); break;
+                case 'ArrowDown': focusTab(1); break;
+                case 'Enter': jumpToTab(); break;
                 default: return;
             }
             e.preventDefault();
         }
     }
-    document.getElementById(tabsDivId).style.display = show === true ? '' : 'none';
-    if (show) {
         document.getElementById(tabsInputId).focus();
         document.getElementById(tabsInputId).value = '';
         // get tab list
         sendToBackground(GLOBAL.METHOD.TABS, null);
-    }
 }
 
-function setTabList(containerId, maxLen, tabList) {
+function setTabSearchList(tabList) {
     tabs = tabList;
     tabsSelectIndex = 0;
-    fillTabsList(containerId, maxLen);
+    fillTabsList(10);
 }
 
-function jumpToTab(containerId) {
-    let choose = document.querySelectorAll(`#${containerId} > .${selectClass}`)[0];
+function jumpToTab() {
+    let choose = document.querySelectorAll(`#${tabsDataId} > .${selectClass}`)[0];
     if (!choose) return;
     let tabc = tabs[choose.getAttribute('tabIdx')*1];
     // jump to tab
@@ -120,10 +118,10 @@ function jumpToTab(containerId) {
     escPress();
 }
 
-function focusTab(containerId, offset) {
+function focusTab(offset) {
     if (!offset || 0 == offset)
         return;
-    let tabDoms = document.querySelectorAll(`#${containerId} > .${tabsPrefix}tab`);
+    let tabDoms = document.querySelectorAll(`#${tabsDataId} > .${tabsPrefix}tab`);
     let j = 0;
     for (let i = tabDoms.length-1; i >= 0; i--) {
         if (tabDoms[i].classList.contains(selectClass)) j = i;
@@ -134,18 +132,18 @@ function focusTab(containerId, offset) {
     tabDoms[j].classList.add(selectClass);
 }
 
-function fillTabsList(containerId, maxLen, key) {
+function fillTabsList(maxLen, key) {
     // tabInnerDom[titleHtml, urlHtml, index, icon]
-    let tabDomList = [], tabInnerDom, hasSelect = false, firstDom;
+    let tabDomList = [], tabInnerDom, hasSelect = false, firstDom, 
+        key1 = key && key.substring(1), isDis = key && key.startsWith('%');
     for (let i = 0, j = 0; i < tabs.length && j < maxLen; i++) {
         if (!key) {
             tabInnerDom = [tabs[i].title, tabs[i].url, i, tabs[i].favIconUrl];
-        } else if (key.startsWith('%')){
-            key = key.substring(1);
-            if(matchKey(tabs[i].title, key)) {
-                tabInnerDom = [highLightChar(tabs[i].title, key), tabs[i].url, i, tabs[i].favIconUrl];
-            } else if (matchKey(tabs[i].url, key)) {
-                tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key), i, tabs[i].favIconUrl];
+        } else if (isDis){
+            if(matchKey(tabs[i].title, key1)) {
+                tabInnerDom = [highLightChar(tabs[i].title, key1), tabs[i].url, i, tabs[i].favIconUrl];
+            } else if (matchKey(tabs[i].url, key1)) {
+                tabInnerDom = [tabs[i].title, highLightChar(tabs[i].url, key1), i, tabs[i].favIconUrl];
             } else{
                 continue;
             }
@@ -171,7 +169,7 @@ function fillTabsList(containerId, maxLen, key) {
         </div>`;
         tabsSelectIndex = firstDom[2];
     }
-    document.getElementById(containerId).innerHTML = tabDomList.join('');
+    document.getElementById(tabsDataId).innerHTML = tabDomList.join('');
 }
 
 

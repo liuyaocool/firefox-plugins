@@ -23,12 +23,13 @@
     z-index: 9999999999;
 }
 
-#ly-hotkey-tabs-input {
+.ly-hotkey-tabs-input {
     color: white;
     width: 100%;
-    font-size: 16px;
-    padding: 5px 10px;
+    font-size: 15px;
+    padding: 8px 10px;
     border: 0;
+    margin-bottom: 5px;
     /* padding 向内扩展 */
     box-sizing: border-box;
     border-radius: 5px;
@@ -38,11 +39,6 @@
     border-bottom: 1px solid hsla(0, 0%, 100%, 0.2);
     border-top: 1px solid hsla(0, 0%, 0%, 0.15);
     box-shadow: inset 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
-}
-
-#ly-hotkey-tabs-id {
-    overflow: auto;
-    padding-top: 10px;
 }
 
 .ly-hotkey-tabs-tab {
