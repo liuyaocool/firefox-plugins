@@ -14,24 +14,49 @@
     "content_scripts": [
         {
             "run_at": "document_end",
-            "js":["inject.js"],
-            "css": ["inject.css"],
-            "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"]
+            "js":["js/base.js", "js/inject.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"],
+            "exclude_matches": [
+                "*://kibana.21tb.com/*",
+                "*://mail.21tb.com/*",
+                "*://yufaredis.21tb.com/redis/",
+                "*://jenkins.21tb.com/*"
+            ]
         },
         {
             "run_at": "document_end",
-            "js":["inject_all.js"],
+            "js":["js/inject_all.js"],
             "all_frames": true,
             "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"]
         },
         {
             "run_at": "document_end",
-            "css": ["yufaredis.css"],
+            "js":["js/base.js", "js/yufaredis.js"],
+            "css": ["css/inject.css", "css/yufaredis.css"],
             "matches": ["*://yufaredis.21tb.com/redis/"]
         },
         {
             "run_at": "document_end",
-            "css": ["nacos.css"],
+            "js":["js/base.js", "js/jenkins.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://jenkins.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "js": ["js/base.js", "js/kibana.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://kibana.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "js": ["js/base.js", "js/mail.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://mail.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "css": ["css/nacos.css"],
             "matches": ["<all_urls>"]
         }
     ],
