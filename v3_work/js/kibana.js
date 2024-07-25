@@ -6,7 +6,9 @@ if (location.href.indexOf('/app/discover') >= 0) {
             case 'AltLeft':
                 break;
             case 'Escape':
-                document.getElementById('savedQueryPopover').nextElementSibling.querySelectorAll('textarea')[0].focus()
+                var dom = document.getElementById('savedQueryPopover').nextElementSibling.querySelectorAll('textarea')[0];
+                dom.focus();
+                dom.select();
                 break;
             default: break;
         }

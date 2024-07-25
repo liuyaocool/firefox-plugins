@@ -19,6 +19,7 @@
             "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"],
             "exclude_matches": [
                 "*://kibana.21tb.com/*",
+                "*://gitlab.21tb.com/*",
                 "*://mail.21tb.com/*",
                 "*://yufaredis.21tb.com/redis/",
                 "*://jenkins.21tb.com/*"
@@ -53,6 +54,12 @@
             "js": ["js/base.js", "js/mail.js"],
             "css": ["css/inject.css"],
             "matches": ["*://mail.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "js": ["js/base.js", "js/gitlab.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://gitlab.21tb.com/*"]
         },
         {
             "run_at": "document_end",
