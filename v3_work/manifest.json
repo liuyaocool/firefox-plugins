@@ -18,6 +18,7 @@
             "css": ["css/inject.css"],
             "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"],
             "exclude_matches": [
+                "*://*/nacos/",
                 "*://kibana.21tb.com/*",
                 "*://gitlab.21tb.com/*",
                 "*://mail.21tb.com/*",
@@ -63,8 +64,9 @@
         },
         {
             "run_at": "document_end",
-            "css": ["css/nacos.css"],
-            "matches": ["<all_urls>"]
+            "js": ["js/base.js", "js/nacos.js"],
+            "css": ["css/inject.css", "css/nacos.css"],
+            "matches": ["*://*/nacos/"]
         }
     ],
 
