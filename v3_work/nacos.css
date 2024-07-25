@@ -1,0 +1,21 @@
+.next-form-item, .new-config-form, h1 {
+    margin: 0 !important;
+}
+
+header {
+    height: 43px !important;
+}
+
+.next-message.next-medium, .config-editor {
+    padding: 0px !important;
+}
+
+.next-input.next-medium
+, .next-input.next-medium input 
+{
+    height: 20px !important;
+}
+
+.next-form-item .next-form-item-label, .next-form-item .next-form-text-align, .next-form-item p {
+    line-height: 20px !important;
+}
