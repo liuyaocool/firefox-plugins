@@ -2,7 +2,7 @@
     border: 1px solid gray;
 }
 
-.tbc-tip {
+.ly-work-tbc-tip {
     z-index: 99999;
     position: fixed;
     top: 0px;
@@ -11,4 +11,13 @@
     color: #017455;
     font-size: 15px;
     text-align: center;
+}
+
+.ly-work-key {
+    color:#91671c;
+    font-weight:bold;
+}
+
+.ly-work-select {
+    background-color: seagreen;
 }

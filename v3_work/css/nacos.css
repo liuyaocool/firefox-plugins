@@ -19,3 +19,7 @@ header {
 .next-form-item .next-form-item-label, .next-form-item .next-form-text-align, .next-form-item p {
     line-height: 20px !important;
 }
+
+textarea {
+    height: 36px;
+}
