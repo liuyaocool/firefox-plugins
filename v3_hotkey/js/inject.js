@@ -61,11 +61,11 @@ function showTabsSwitchPanel(offset) {
 }
 
 function setTabHisList(tabList) {
-    // todo sort
     // lastAccessed 上次访问时间
-    tabList.sort((a, b) => b.lastAccessed - a.lastAccessed);
     // tabList.shift();
-    tabs = tabList;
+    tabs = tabList
+        .filter(t => !t.url.startsWith('about:'))
+        .sort((a, b) => b.lastAccessed - a.lastAccessed);;
     tabsSelectIndex = 1;
     fillTabsList(10);
 }
