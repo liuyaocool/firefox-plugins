@@ -23,12 +23,13 @@
                 "*://gitlab.21tb.com/*",
                 "*://mail.21tb.com/*",
                 "*://yufaredis.21tb.com/redis/",
+                "*://yufajenkins.21tb.com/*",
                 "*://jenkins.21tb.com/*"
             ]
         },
         {
             "run_at": "document_end",
-            "js":["js/inject_all.js"],
+            "js":["js/openframe.js"],
             "all_frames": true,
             "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"]
         },
@@ -43,6 +44,12 @@
             "js":["js/base.js", "js/jenkins.js"],
             "css": ["css/inject.css"],
             "matches": ["*://jenkins.21tb.com/*"]
+        },
+        {
+            "run_at": "document_end",
+            "js":["js/base.js", "js/yufajenkins.js"],
+            "css": ["css/inject.css"],
+            "matches": ["*://yufajenkins.21tb.com/*"]
         },
         {
             "run_at": "document_end",
