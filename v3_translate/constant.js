@@ -1,0 +1,1 @@
+const divId = 'ly_translate_en2ch';

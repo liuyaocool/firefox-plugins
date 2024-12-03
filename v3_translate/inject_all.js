@@ -1,4 +1,7 @@
 document.onmouseup = function (e) {
+    if (document.getSelection() ) {
+        body
+    }
     sendToBackground('src', document.getSelection().toString());
 }
 

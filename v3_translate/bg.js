@@ -1,7 +1,3 @@
-browser.browserAction.onClicked.addListener((tab) => {
-    browser.tabs.create({url: "options.html"});
-});
-
 browser.runtime.onMessage.addListener((req, sender, resp) => {
     switch (req.type) {
         case 'src': forwardToActiveTab(req); break;

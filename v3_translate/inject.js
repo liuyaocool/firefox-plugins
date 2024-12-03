@@ -5,7 +5,6 @@ browser.runtime.onMessage.addListener((request, sender, response) => {
     }
 });
 
-let divId = 'ly_translate_en2ch';
 (() => {
     var div = document.createElement('div');
     div.id = divId;
