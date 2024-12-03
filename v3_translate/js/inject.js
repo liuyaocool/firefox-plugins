@@ -12,7 +12,7 @@ browser.runtime.onMessage.addListener((request, sender, response) => {
     console.log('translate inject success');
 })()
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 0; i++) {
     document.getElementById(GLOBAL.CONTAINER_ID).innerHTML += `
 <div id="1695101791448479">
         <div class="ly_trnslate_src">样式</div>
