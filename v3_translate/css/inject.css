@@ -10,16 +10,19 @@
     z-index: 9999;
 }
 
-#ly_translate_en2ch * {
-    color: #ac1aff;
+.ly_trnslate_src, .ly_trnslate_ret {
+    /* color: #ac1aff; */
+    color: #ffd700;
     text-align: left;
 }
 
 #ly_translate_en2ch > div {
     margin: 10px 10px 0 10px;
     border-radius: 5px;
-    border: 2px white solid;
-    background-color: #0be8b8e0;
+    /* border: 2px white solid; */
+    /* background-color: #0be8b8e0; */
+    background-color: #9c9c9c5e;
+    backdrop-filter: blur(29px);
     position: relative;
     overflow: hidden;
 }
@@ -29,10 +32,11 @@
 }
 
 .ly_trnslate_src {
-    border-bottom: 1px solid gray;
+    /* border-bottom: 1px solid gray; */
+    border-bottom: 1px solid #2cff00;
     font-weight: bold;
     font-size: 18px;
-    background-color: rgb(0 255 161);
+    /* background-color: rgb(0 255 161); */
     white-space: nowrap; /* 防止文本换行 */
     overflow: hidden; /* 隐藏溢出内容 */
     text-overflow: ellipsis; /* 显示省略号 */

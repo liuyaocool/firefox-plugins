@@ -7,13 +7,13 @@ browser.runtime.onMessage.addListener((request, sender, response) => {
 
 (() => {
     var div = document.createElement('div');
-    div.id = divId;
+    div.id = GLOBAL.CONTAINER_ID;
     document.body.append(div);
     console.log('translate inject success');
 })()
 
-for (let i = 0; i < 0; i++) {
-    document.getElementById(divId).innerHTML += `
+for (let i = 0; i < 1; i++) {
+    document.getElementById(GLOBAL.CONTAINER_ID).innerHTML += `
 <div id="1695101791448479">
         <div class="ly_trnslate_src">样式</div>
         <div class="ly_trnslate_ret">
@@ -55,7 +55,7 @@ function addBox(src) {
     addDiv.querySelector('span').onclick = e => rmv(src);
     addDiv.onmouseover = e => ING[src].leave = true;
     addDiv.onmouseleave = e => ING[src].leave = false;
-    let divDom = document.getElementById(divId);
+    let divDom = document.getElementById(GLOBAL.CONTAINER_ID);
     divDom.insertBefore(addDiv, divDom.firstChild);
 }
 
