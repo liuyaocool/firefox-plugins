@@ -1,4 +1,4 @@
-const GLOBAL = {
+var GLOBAL = {
     METHOD: {
         TABS: "tabs",
         TABS_HIS: "tabs-his",

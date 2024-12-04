@@ -19,19 +19,19 @@
   "content_scripts": [
     {
       "run_at": "document_end",
-      "js":["js/constant.js", "js/inject.js"],
+      "js":["js/v3_api.js", "js/constant.js", "js/inject.js"],
       "css": ["css/inject.css", "css/shake.css"],
       "matches":["<all_urls>"]
     }, {
       "run_at": "document_end",
-      "js":["js/constant.js", "js/inject_all.js"],
+      "js":["js/v3_api.js", "js/constant.js", "js/inject_all.js"],
       "matches":["<all_urls>"],
       "all_frames": true
     }
   ],
 
   "background": {
-    "scripts": ["js/bg.js"]
+    "scripts": ["js/v3_api.js", "js/constant.js", "js/bg.js"]
   },
 
   "permissions": [

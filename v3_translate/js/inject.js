@@ -1,6 +1,7 @@
-browser.runtime.onMessage.addListener((request, sender, response) => {
-    switch(request.type) {
-        case 'src': translate(request.data); break;
+addMessageListener((req, sender, resp) => {
+    switch(req.event) {
+        case GLOBAL.EVENT.SRC: translate(req.data.lan, req.data.str); break;
+        case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.str, req.data.trans); break;
         default: break;
     }
 });
@@ -96,95 +97,18 @@ function rmv(src) {
     setTimeout(() => resDiv.remove(), timout*1.5);
 }
 
-function translate(src) {
-    if (!src || !src.trim()) return;
-    src = src.trim();
+function translate(lan, src) {
     if (ING[src]) {
         buling(ING[src].id);
         ING[src].tim = 6;
         return;
     }
-    let lan = checkAndGetLan(src);
-    if (!lan) return;
     addBox(src);
-    enToChGoogle(src, lan);
-}
-
-function enToChGoogle(str, lan) {
-    switch (lan) {
-        case 'en': lan = 'en'; break;
-        case 'ch': lan = 'zh-CN'; break;
-        default: fillBox(str, '请选择 中文或英文'); return;
-    }
-    let xhr = new XMLHttpRequest();
-    console.log(str);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            let trans = '';
-            if (xhr.status >= 200 && xhr.status < 300) {
-                let i, word, a = [], list, res = JSON.parse(xhr.response);
-                (list = res.sentences) && list.forEach(e => trans += e.trans || '');
-                a.push(trans);
-                trans = `<p>${trans}</p>`;
-                console.log(res.dict);
-                (list = res.dict) && list.forEach(e => {
-                    trans += `<p>${e.pos}:`;
-                    for (let j = 0; j < e.entry.length; j++) {
-                        if (a.indexOf(word = e.entry[j].word) >= 0) continue;
-                        trans += `<span>${word}</span>`;
-                        a.push(word);
-                    }
-                    trans += '</p>';
-                });
-                let words = [];
-                for (list = res.alternative_translations, i = 0; list && i < list.length; i++) {
-                    for (let j = 0; j < list[i].alternative.length; j++) {
-                        (words[j] || (words[j] = [])).push(list[i].alternative[j].word_postproc);
-                    }
-                }
-                trans += `<p>`;
-                words.forEach(e => {
-                    if (a.indexOf(word = e.join('')) >= 0) return;
-                    trans += `<span>${word}</span>`
-                    a.push(word);
-                });
-                trans += '</p>';
-            } else {
-                trans = `<p>请求出错: ${xhr.response}</p>`;
-            }
-            fillBox(str, trans);
-        }
-    };
-    xhr.open("GET",
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lan}&dj=1&dt=t&dt=bd&dt=qc&dt=rm&dt=ex&dt=at&dt=ss&dt=rw&dt=ld&q=${str}&tk=389519.389519`,
-        true);
-    xhr.send(null);
+    sendToBackground(GLOBAL.EVENT.TRANSLATE, {lan: lan, str: src});
 }
 
 function buling(id) {
     let classList = document.getElementById(id).classList;
     classList.add('buling');
     setTimeout(() => classList.remove('buling'), 500);
-}
-
-// 生成一个随机ID，使用时间戳和随机数
-function uuid() {
-    return `${new Date().getTime()}${Math.floor(Math.random() * 10000)}`;
-}
-
-function checkAndGetLan(str) {
-    if (!str || !str.trim()) return '';
-    const lanPat = {
-        en: [/^[a-zA-Z]+$/, 'ch'],
-        ch: [/[\u4e00-\u9fff]/, 'en'],
-        jp: [/[\u3040-\u30ff]/, 'ch'],
-    };
-    if (str.indexOf('http://') == 0
-        || str.indexOf('https://') == 0
-    ) return '';
-    for (let i = 0; i < str.length; i++)
-        for (let lan in lanPat)
-            if (lanPat[lan][0].test(str.charAt(i)))
-                return lanPat[lan][1];
-    return '';
 }
