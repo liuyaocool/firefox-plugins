@@ -21,8 +21,8 @@
     border-radius: 5px;
     /* border: 2px white solid; */
     /* background-color: #0be8b8e0; */
-    background-color: #9c9c9c5e;
-    backdrop-filter: blur(29px);
+    background-color: #4b4b4ba8;
+    backdrop-filter: blur(7px);
     position: relative;
     overflow: hidden;
 }
