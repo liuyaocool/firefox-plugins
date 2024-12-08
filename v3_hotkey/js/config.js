@@ -37,44 +37,48 @@ const keyMapShow = {
     "ArrowDown": 'Down'
 }
 
-let ksIds = [
-    'ly-hotkey-tabs-copy',
-    'ly-hotkey-tabs-switch',
-    'ly-hotkey-tabs-search',
-]
+storageGet(GLOBAL.KEY_BIND_CACHE).then(res => {
+    if (!res) {
+        console.log('cache init');
+        res = '{"COPY":{"code":"KeyD","altKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}';
+        storageSet(GLOBAL.KEY_BIND_CACHE, res);
+    }
+    setKeyBinds(JSON.parse(res));
+});
+
 const key_highlight_css = 'key-select';
 const key_highlight_cursor_css = 'key-select-cursor';
-const func_key_index = [
-    [0, 'ctrlKey', GLOBAL.FUNC_KEY_ENUM.CTRL],
-    [1, 'altKey', GLOBAL.FUNC_KEY_ENUM.ALT],
-    [2, 'shiftKey', GLOBAL.FUNC_KEY_ENUM.SHIFT],
-    [3, 'metaKey', GLOBAL.FUNC_KEY_ENUM.META],
-];
-for (let i = 0; i < ksIds.length; i++) {
-    document.getElementById(ksIds[i]).addEventListener('keydown', keyDownHandler);
-    document.getElementById(ksIds[i]).addEventListener('keyUp', keyUpHandler);
-}
+
+document.querySelectorAll('[key]').forEach(e => {
+    e.addEventListener('keydown', keyDownHandler);
+    e.addEventListener('keyUp', keyUpHandler);
+});
 document.querySelectorAll('.func-key').forEach(ele => ele.addEventListener('click', funcKeyClick));
 document.getElementById('save').addEventListener('click', save);
 
 function keyDownHandler(e) {
-    e.preventDefault();
-    let fks = e.target.parentElement.querySelectorAll('span');
-    // 删除‘功能按键’的样式
-    func_key_index.forEach(k => {
-        fks[k[0]].classList[e[k[1]] ? "add" : "remove"](key_highlight_css);
-    })
-    console.log(e);
-    if (e.code.startsWith('Digit')) {
-        e.target.value = e.code.substring(5);        
-    } else if (e.code.startsWith('Key')) {
-        e.target.value = e.code.substring(3);
-    } else if (keyMapShow[e.code]) {
-        e.target.value = keyMapShow[e.code];
-    } else {
-        e.target.value = '';
+    // 刷新‘功能按键’的样式
+    e.target.parentElement.querySelectorAll('span').forEach(sp => {
+        sp.classList[e[sp.getAttribute('ev')] ? "add": "remove"](key_highlight_css);
+    });
+    handlKeyCode(e.target, e.code);
+    if (e.target.value) {
+        e.preventDefault();        
     }
-    e.target.setAttribute('keycode', e.code);
+}
+
+function handlKeyCode(target, code) {
+    if (code.startsWith('Digit')) {
+        target.value = code.substring(5);
+    } else if (code.startsWith('Key')) {
+        target.value = code.substring(3);
+    } else if (keyMapShow[code]) {
+        target.value = keyMapShow[code];
+    } else {
+        target.value = '';
+        code = '';
+    }
+    target.setAttribute('code', code);
 }
 
 function funcKeyClick(e) {
@@ -86,6 +90,52 @@ function keyUpHandler(e) {
 
 }
 
+function getKeyBinds() {
+    let keyBinds = {}, kb;
+    let handlerSel = sel => {
+        kb[sel.getAttribute('ev')] = sel.classList.contains(key_highlight_css) || sel.classList.contains(key_highlight_cursor_css);
+    };
+    document.querySelectorAll('[key]').forEach(e => {
+        kb = keyBinds[e.getAttribute('key')] = {code: e.getAttribute('code')};
+        e.parentElement.querySelectorAll('.func-key').forEach(handlerSel);
+        // e.parentElement.querySelectorAll('.' + key_highlight_css)
+        // e.parentElement.querySelectorAll('.' + key_highlight_cursor_css).forEach(handlerSel);
+    });
+    return keyBinds;
+}
+
+function setKeyBinds(keyBinds) {
+    console.log(keyBinds);
+    document.querySelectorAll('[key]').forEach(e => {
+        let kb = keyBinds[e.getAttribute('key')];
+        handlKeyCode(e, kb.code);
+        for(let k in kb) {
+            if (k != 'code' && true === kb[k]) {
+                e.parentElement.querySelector(`[ev=${k}`).classList.add(key_highlight_css);
+            }
+        }
+    });
+}
+
 function save() {
-    
+    let keyBinds = getKeyBinds();
+    storageSet(GLOBAL.KEY_BIND_CACHE, JSON.stringify(keyBinds));
+    showMsg('save ok');
+}
+
+function storageSet(k, v) {
+    let o = {};
+    o[k] = v;
+    return browser.storage.local.set(o);
+}
+
+async function storageGet(k) {
+    return (await browser.storage.local.get([k]))[k];
+}
+
+function showMsg(msg) {
+    document.getElementById('msg').innerText = msg;
+    setTimeout(() => {
+        document.getElementById('msg').innerText = '';
+    }, 1000);
 }

@@ -18,6 +18,16 @@ async function sendToActiveTab(event, data) {
     forwardToActiveTab({event: event, data: data});
 }
 
+function storageSet(k, v) {
+    let o = {};
+    o[k] = v;
+    return browser.storage.local.set(o);
+}
+
+async function storageGet(k) {
+    return await browser.storage.local.get([k]);
+}
+
 function uuid() {
     return crypto.randomUUID().replaceAll('-', '');
 }
