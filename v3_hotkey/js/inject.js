@@ -271,3 +271,9 @@ function getHighLight(keyIdx, str) {
 }
 
 console.log('hotkey injected');
+
+function addMessageListener(listener) {
+    browser.runtime.onMessage.addListener((req, sender, resp) => {
+        listener(req, sender, resp);
+    });
+}

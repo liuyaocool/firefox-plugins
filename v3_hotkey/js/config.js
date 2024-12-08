@@ -37,14 +37,7 @@ const keyMapShow = {
     "ArrowDown": 'Down'
 }
 
-storageGet(GLOBAL.KEY_BIND_CACHE).then(res => {
-    if (!res) {
-        console.log('cache init');
-        res = '{"COPY":{"code":"KeyD","altKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}';
-        storageSet(GLOBAL.KEY_BIND_CACHE, res);
-    }
-    setKeyBinds(JSON.parse(res));
-});
+storageGet(GLOBAL.KEY_BIND_CACHE).then(res => setKeyBinds(JSON.parse(res)));
 
 const key_highlight_css = 'key-select';
 const key_highlight_cursor_css = 'key-select-cursor';

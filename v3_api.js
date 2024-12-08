@@ -31,3 +31,7 @@ async function storageGet(k) {
 function uuid() {
     return crypto.randomUUID().replaceAll('-', '');
 }
+
+function getSourceUrl(path) {
+    return browser.runtime.getURL(path); 
+}
