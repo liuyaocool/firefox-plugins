@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ly-hotkey 配置</title>
+    <style>
+        html {margin: 0; height: 100%}
+        body {
+            height:calc(100% - 20px);
+            padding: 10px;
+            margin: 0;
+            background-color: #181a1b;
+            color: white;
+            display: flex;
+            /* 水平居中 */
+            justify-content: center;
+            /* 垂直居中 */
+            /* align-items: center; */
+        }
+
+        @font-face {
+            font-family: pagefont;
+            src: url('font/RainbowParty.ttf') format('truetype');
+        }
+
+        body * {
+            font-family: pagefont;
+        }
+        table {
+            height: fit-content;
+        }
+        tr {
+            height: 30px;
+        }
+       
+        .func-key {
+            /* margin: 0 3px; */
+            font-size: 14px;
+            color: gray;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        tr > td:nth-of-type(1) {
+            text-align: right;
+            font-size: 22px;
+        }
+
+        .key-select {
+            color: white !important;
+        }
+
+        .key-select-cursor {
+            color: #d2a800 !important;
+        }
+
+        .key-press > input {
+            background-color: transparent;
+            outline: none;
+            color: white;
+            width: 50px;
+            border: 1px solid gray;
+            text-align: center;
+            caret-color: transparent;
+            cursor: pointer;
+            font-family: revert;
+        }
+
+        .key-press > input:focus {
+            background-color: gray  ;
+        }
+
+    </style>
+</head>
+<body>
+    <table>
+        <tr><td>Copy Tab:</td><td class="key-press">
+            <span class="func-key">Ctrl</span>
+            <span class="func-key">Alt</span>
+            <span class="func-key">Shift</span>
+            <span class="func-key">Meta</span>
+            <input id="ly-hotkey-tabs-copy" placeholder="press key">
+        </td></tr>
+        <tr><td>Switch Tab:</td><td class="key-press">
+            <span class="func-key">Ctrl</span>
+            <span class="func-key">Alt</span>
+            <span class="func-key">Shift</span>
+            <span class="func-key">Meta</span>
+            <input id="ly-hotkey-tabs-switch" placeholder="press key">
+        </td></tr>
+        <tr><td>Search Tab:</td><td class="key-press">
+            <span class="func-key">Ctrl</span>
+            <span class="func-key">Alt</span>
+            <span class="func-key">Shift</span>
+            <span class="func-key">Meta</span>
+            <input id="ly-hotkey-tabs-search" placeholder="press key">
+        </td></tr>
+        <tr><td colspan="2" style="text-align: center;">
+            <button type="button" id="save">Save</button>
+        </td></tr>
+    </table>
+
+<script src="js/constant.js"></script>
+<script src="js/config.js"></script>
+</body>
+</html>
