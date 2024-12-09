@@ -1,89 +1,77 @@
-let keyUpFunction = {};
-document.addEventListener("keydown", function (ev) {
+let keyUpFunction = () => {};
+let keyUpHot;
+document.addEventListener("keydown", async function (ev) {
     switch(ev.key) {
         case 'Escape': 
-            sendToBackground(GLOBAL.KEY.ESC, null); 
-            keyUpFunction = {};
+            sendToBackground(GLOBAL.KEY.ESC, null);
+            keyUpFunction = null;
             break;
     }
-    storageGet(GLOBAL.KEY_BIND_CACHE).then(res => {
-        let keyBind = JSON.parse(res);
-        let keyType = "";
-        for1:
-        for(var type in keyBind) {
-            for(var k in keyBind[type]) {
-                if (keyBind[type][k] !== ev[k]) {
-                    continue for1;
-                }
+    let keyBind = JSON.parse(await storageGet(GLOBAL.KEY_BIND_CACHE));
+    let keyType = "", keyCountObj = {}, keyCount = 0;
+    for1:
+    for(var k1 in keyBind) {
+        for(var k2 in keyBind[k1]) {
+            if (keyBind[k1][k2] !== ev[k2]) {
+                keyCount[k1]++;
             }
-            keyType = type;
+        }
+        break;
+    }
+    for(var k in keyCountObj) {
+        if (keyCountObj[k] > keyCount) {
+            keyType = k;
+            keyCount = keyCountObj[k];
+        }
+    }
+    // console.log(keyType);
+    if (!keyType) {
+        // console.log(keyBind)
+        return;
+    }
+    keyUpHot = keyBind[keyType];
+    switch(keyType) {
+        case GLOBAL.FUNC.COPY: 
+            sendToBackground(GLOBAL.KEY.DUPLICATE_TAB, null);
             break;
-        }
-        // console.log(keyType);
-        if (!keyType) {
-            // console.log(keyBind)
-            return;
-        }
-        switch(keyType) {
-            case GLOBAL.FUNC.COPY: 
-                sendToBackground(GLOBAL.KEY.DUPLICATE_TAB, null);
-                break;
-            case GLOBAL.FUNC.SEARCH: 
-                sendToBackground(GLOBAL.KEY.SEARCH_PANEL, null);
-                break;
-            case GLOBAL.FUNC.SWITCH_NEXT: 
-                sendToBackground(GLOBAL.KEY.SWITCH_PANEL_DOWN, null);
-                keyUpFunction["Alt"] = () => sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
-                break;
-            case GLOBAL.FUNC.SWITCH_PREV: 
-                sendToBackground(GLOBAL.KEY.SWITCH_PANEL_UP, null);
-                keyUpFunction["Alt"] = () => sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
-                break;
-            default: return;
-        }
-    });
-    // switch(ev.key) {
-    //     case 'Escape': 
-    //         sendToBackground(GLOBAL.KEY.ESC, null); 
-    //         keyUpFunction = {};
-    //         break;
-    //     case 'o': 
-    //         if (ev.altKey) {
-    //             sendToBackground(GLOBAL.KEY.SEARCH_PANEL, null);
-    //             break;
-    //         }
-    //         return;
-    //     case 'd': 
-    //         if (ev.ctrlKey) {
-    //             sendToBackground(GLOBAL.KEY.DUPLICATE_TAB, null);
-    //             break;
-    //         }
-    //         return;
-    //     case 'Tab':
-    //         if (ev.altKey) {
-    //             sendToBackground(GLOBAL.KEY.SWITCH_PANEL_DOWN, null);
-    //             keyUpFunction["Alt"] = () => sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
-    //             break;
-    //         }
-    //         return;
-    //     case '`':
-    //         if (ev.altKey) {
-    //             sendToBackground(GLOBAL.KEY.SWITCH_PANEL_UP, null);
-    //             keyUpFunction["Alt"] = () => sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
-    //             break;
-    //         }
-    //         return;
-    //     default: return;
-    // }
+        case GLOBAL.FUNC.SEARCH: 
+            sendToBackground(GLOBAL.KEY.SEARCH_PANEL, null);
+            break;
+        case GLOBAL.FUNC.SWITCH_NEXT: 
+            sendToBackground(GLOBAL.KEY.SWITCH_PANEL_DOWN, null);
+            keyUpFunction = gotoTab;
+            break;
+        case GLOBAL.FUNC.SWITCH_PREV: 
+            sendToBackground(GLOBAL.KEY.SWITCH_PANEL_UP, null);
+            keyUpFunction = gotoTab;
+            break;
+        default: return;
+    }
     ev.preventDefault();
 });
 
 document.addEventListener("keyup", function (ev) {
-    if (keyUpFunction[ev.key]) {
-        keyUpFunction[ev.key]();
-        keyUpFunction[ev.key] = null;
-    }
+    hotKeyUpHandle(ev);
 })
+
+function hotKeyUpHandle(ev) {
+    if (!keyUpFunction) {
+        return;
+    }
+    console.log(keyUpHot)
+    for(var k in keyUpHot) {
+        console.log(`${k} ${ev[k]}`);
+        if (false !== keyUpHot[k] && keyUpHot[k] == ev[k]) {
+            return;
+        }
+    }
+    keyUpFunction();
+    keyUpFunction = null;
+}
+
+function gotoTab() {
+    sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
+}
 
 async function storageGet(k) {
     return (await browser.storage.local.get([k]))[k];

@@ -39,10 +39,12 @@ function addMessageListener(listener) {
     });
 }
 
-function getTabs() {
-    return browser.tabs.query({
+async function getTabs() {
+    return (await browser.tabs.query({
         "lastFocusedWindow": true
-    });
+    })).filter(tb => 
+        !tb.url.startsWith('moz-extension://') && !tb.url.startsWith('about:')
+    );
 }
 
 function gotoTab(tabId) {
