@@ -12,16 +12,18 @@ document.addEventListener("keydown", async function (ev) {
     for1:
     for(var k1 in keyBind) {
         for(var k2 in keyBind[k1]) {
-            if (keyBind[k1][k2] !== ev[k2]) {
-                keyCount[k1]++;
+            if (!keyCountObj[k1]) 
+                keyCountObj[k1] = [0, 0];
+            keyCountObj[k1][0]++;
+            if (keyBind[k1][k2] === ev[k2]) {
+                keyCountObj[k1][1]++;
             }
         }
-        break;
     }
     for(var k in keyCountObj) {
-        if (keyCountObj[k] > keyCount) {
+        if (keyCountObj[k][1] >= keyCountObj[k][0] && keyCountObj[k][1] > keyCount) {
             keyType = k;
-            keyCount = keyCountObj[k];
+            keyCount = keyCountObj[k][1];
         }
     }
     // console.log(keyType);
