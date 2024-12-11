@@ -5,7 +5,7 @@ browser.action.onClicked.addListener((tab) => {
 
 console.log('cache init');
 storageSet(GLOBAL.KEY_BIND_CACHE, 
-    '{"COPY":{"code":"KeyD","altKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}');
+    '{"COPY":{"code":"KeyD","ctrlKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}');
 
 addMessageListener((req, sender, resp) => {
     if (GLOBAL.KEY[req.method]) {
