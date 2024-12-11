@@ -60,9 +60,7 @@ function hotKeyUpHandle(ev) {
     if (!keyUpFunction) {
         return;
     }
-    console.log(keyUpHot)
     for(var k in keyUpHot) {
-        console.log(`${k} ${ev[k]}`);
         if (false !== keyUpHot[k] && keyUpHot[k] == ev[k]) {
             return;
         }
