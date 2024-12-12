@@ -83,7 +83,7 @@ function showTabsSearchPanel(show) {
         tabPanel.id = tabsPanelId;
         tabPanel.classList.add(boxClass);
         tabPanel.innerHTML = `
-            <input id="${tabsInputId}" class="ly-hotkey-tabs-input" type="text" placeholder="input for filter tabs ('%' start support discontinuous)">
+            <input id="${tabsInputId}" class="ly-hotkey-tabs-input" type="text" placeholder="input(split by space) for filter tabs | '%' start support discontinuous">
             <div id="${tabsDataId}"></div>`;
         document.body.appendChild(tabPanel);
         document.getElementById(tabsInputId).oninput = e => fillTabsList(10, e.target.value);

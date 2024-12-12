@@ -3,9 +3,13 @@ browser.action.onClicked.addListener((tab) => {
     browser.tabs.create({url: "config.html"});
 });
 
-console.log('cache init');
-storageSet(GLOBAL.KEY_BIND_CACHE, 
-    '{"COPY":{"code":"KeyD","ctrlKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}');
+storageGet(GLOBAL.KEY_BIND_CACHE).then(c => {
+    if (c) return;
+    console.log('cache init');
+    storageSet(GLOBAL.KEY_BIND_CACHE, 
+        '{"COPY":{"code":"KeyD","ctrlKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}'
+    );
+})
 
 addMessageListener((req, sender, resp) => {
     if (GLOBAL.KEY[req.method]) {
@@ -31,6 +35,10 @@ function storageSet(k, v) {
     let o = {};
     o[k] = v;
     return browser.storage.local.set(o);
+}
+
+async function storageGet(k) {
+    return (await browser.storage.local.get([k]))[k];
 }
 
 function addMessageListener(listener) {
