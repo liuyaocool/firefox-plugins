@@ -2,7 +2,8 @@ var GLOBAL = {
     METHOD: {
         TABS: "tabs",
         TABS_HIS: "tabs-his",
-        GOTO_TAB: "goto_tab" 
+        GOTO_TAB: "goto_tab",
+        CACHE_LOAD: "cache_load",
     },
     KEY: {
         ESC: "ESC",
@@ -10,7 +11,7 @@ var GLOBAL = {
         SEARCH_PANEL: "SEARCH_PANEL",
         SWITCH_PANEL_UP: "SWITCH_PANEL_UP",
         SWITCH_PANEL_DOWN: "SWITCH_PANEL_DOWN",
-        SWITCH_PANEL_GOTO: "SWITCH_PANEL_GOTO"
+        SWITCH_PANEL_GOTO: "SWITCH_PANEL_GOTO",
     },
     KEY_BIND_CACHE: "keyBinds",
     FUNC: {

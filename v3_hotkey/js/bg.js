@@ -2,7 +2,7 @@
 browser.action.onClicked.addListener((tab) => {
     browser.tabs.create({url: "config.html"});
 });
-
+console.log('hotkey init');
 storageGet(GLOBAL.KEY_BIND_CACHE).then(c => {
     if (c) return;
     console.log('cache init');
@@ -11,45 +11,35 @@ storageGet(GLOBAL.KEY_BIND_CACHE).then(c => {
     );
 })
 
-addMessageListener((req, sender, resp) => {
-    if (GLOBAL.KEY[req.method]) {
-        // forwardToActiveTab(req);
-        sendMessageToTab(sender.tab.id, req);
+addMessageListener((method, data, sender, resp) => {
+    if (GLOBAL.KEY[method]) {
+        sendMessageToTab(sender.tab.id, method, data);
         return;
     }
-    switch (req.method) {
+    switch (method) {
+        case GLOBAL.METHOD.CACHE_LOAD: 
+            getTabs().then(tabs => {
+                tabs.forEach(tb => {
+                    console.log(tb.url);
+                    sendMessageToTab(tb.id, method)
+                })
+            });
+            break;
         case GLOBAL.METHOD.TABS_HIS: 
         case GLOBAL.METHOD.TABS: 
-            getTabs(req.data).then(res => {
-                req.data = res;
-                sendMessageToTab(sender.tab.id, req)
+            getTabs().then(res => {
+                sendMessageToTab(sender.tab.id, method, res);
                 // resp(req); ??
             });
             break;
-        case GLOBAL.METHOD.GOTO_TAB: gotoTab(req.data); break;
+        case GLOBAL.METHOD.GOTO_TAB: gotoTab(data); break;
         default: break;
     }
 });
 
-function storageSet(k, v) {
-    let o = {};
-    o[k] = v;
-    return browser.storage.local.set(o);
-}
-
-async function storageGet(k) {
-    return (await browser.storage.local.get([k]))[k];
-}
-
-function addMessageListener(listener) {
-    browser.runtime.onMessage.addListener((req, sender, resp) => {
-        listener(req, sender, resp);
-    });
-}
-
 async function getTabs() {
     return (await browser.tabs.query({
-        "lastFocusedWindow": true
+        // "lastFocusedWindow": true
     })).filter(tb => 
         !tb.url.startsWith('moz-extension://') && !tb.url.startsWith('about:')
     );
@@ -59,9 +49,6 @@ function gotoTab(tabId) {
     browser.tabs.update(tabId, { active: true });
 }
 
-function sendMessageToTab(tabId, message) {
-    browser.tabs.sendMessage(tabId, message);
-}
 
 async function forwardToActiveTab(message) {
     const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });

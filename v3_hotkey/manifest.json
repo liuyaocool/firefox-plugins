@@ -14,7 +14,7 @@
             "run_at": "document_end",
             "match_origin_as_fallback": true,
             "all_frames": true,
-            "js": [ "js/constant.js", "js/inject_all.js" ],
+            "js": ["js/v3_api.js", "js/constant.js", "js/inject_all.js" ],
             "matches": ["<all_urls>"]
         },
         {
@@ -33,6 +33,7 @@
     },
     "background": {
         "scripts": [
+            "js/v3_api.js",
             "js/constant.js",
             "js/bg.js"
         ]

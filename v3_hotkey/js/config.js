@@ -86,19 +86,17 @@ function keyUpHandler(e) {
 function getKeyBinds() {
     let keyBinds = {}, kb;
     let handlerSel = sel => {
-        kb[sel.getAttribute('ev')] = sel.classList.contains(key_highlight_css) || sel.classList.contains(key_highlight_cursor_css);
+        kb[sel.getAttribute('ev')] = sel.classList.contains(key_highlight_css) 
+            || sel.classList.contains(key_highlight_cursor_css);
     };
     document.querySelectorAll('[key]').forEach(e => {
         kb = keyBinds[e.getAttribute('key')] = {code: e.getAttribute('code')};
         e.parentElement.querySelectorAll('.func-key').forEach(handlerSel);
-        // e.parentElement.querySelectorAll('.' + key_highlight_css)
-        // e.parentElement.querySelectorAll('.' + key_highlight_cursor_css).forEach(handlerSel);
     });
     return keyBinds;
 }
 
 function setKeyBinds(keyBinds) {
-    console.log(keyBinds);
     document.querySelectorAll('[key]').forEach(e => {
         let kb = keyBinds[e.getAttribute('key')];
         handlKeyCode(e, kb.code);
@@ -114,16 +112,7 @@ function save() {
     let keyBinds = getKeyBinds();
     storageSet(GLOBAL.KEY_BIND_CACHE, JSON.stringify(keyBinds));
     showMsg('save ok');
-}
-
-function storageSet(k, v) {
-    let o = {};
-    o[k] = v;
-    return browser.storage.local.set(o);
-}
-
-async function storageGet(k) {
-    return (await browser.storage.local.get([k]))[k];
+    sendToBackground(GLOBAL.METHOD.CACHE_LOAD);
 }
 
 function showMsg(msg) {

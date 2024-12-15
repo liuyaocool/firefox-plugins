@@ -1,15 +1,24 @@
-let keyUpFunction = () => {};
-let keyUpHot;
-document.addEventListener("keydown", async function (ev) {
+let keyUpFunction = () => {}, keyUpHot, keyBind,
+    cacheLoad = () => storageGet(GLOBAL.KEY_BIND_CACHE).then(res => keyBind = JSON.parse(res));
+
+cacheLoad();
+addMessageListener((method, data, sender, resp) => {
+    switch (method) {
+        case GLOBAL.METHOD.CACHE_LOAD: 
+            console.log("cache upload");
+            cacheLoad();
+            break;
+    }
+});
+
+document.addEventListener("keydown", function (ev) {
     switch(ev.key) {
         case 'Escape': 
             sendToBackground(GLOBAL.KEY.ESC, null);
             keyUpFunction = null;
             break;
     }
-    let keyBind = JSON.parse(await storageGet(GLOBAL.KEY_BIND_CACHE));
     let keyType = "", keyCountObj = {}, keyCount = 0;
-    for1:
     for(var k1 in keyBind) {
         for(var k2 in keyBind[k1]) {
             if (!keyCountObj[k1]) 
@@ -26,11 +35,7 @@ document.addEventListener("keydown", async function (ev) {
             keyCount = keyCountObj[k][1];
         }
     }
-    // console.log(keyType);
-    if (!keyType) {
-        // console.log(keyBind)
-        return;
-    }
+    if (!keyType) return;
     keyUpHot = keyBind[keyType];
     switch(keyType) {
         case GLOBAL.FUNC.COPY: 
@@ -71,14 +76,6 @@ function hotKeyUpHandle(ev) {
 
 function gotoTab() {
     sendToBackground(GLOBAL.KEY.SWITCH_PANEL_GOTO, null);
-}
-
-async function storageGet(k) {
-    return (await browser.storage.local.get([k]))[k];
-}
-
-function sendToBackground(method, data) {
-    browser.runtime.sendMessage({method: method, data: data}, {});
 }
 
 console.log('hotkey all injected');

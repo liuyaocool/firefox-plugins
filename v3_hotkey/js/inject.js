@@ -8,10 +8,10 @@ window.addEventListener('blur', function() {
     escPress();
 });
 
-addMessageListener((req, sender, resp) => {
-    switch (req.method) {
-        case GLOBAL.METHOD.TABS: setTabSearchList(req.data); break;
-        case GLOBAL.METHOD.TABS_HIS: setTabHisList(req.data); break;
+addMessageListener((method, data, sender, resp) => {
+    switch (method) {
+        case GLOBAL.METHOD.TABS: setTabSearchList(data); break;
+        case GLOBAL.METHOD.TABS_HIS: setTabHisList(data); break;
         case GLOBAL.KEY.ESC: escPress(); break;
         case GLOBAL.KEY.DUPLICATE_TAB: window.open(location.href); break;
         case GLOBAL.KEY.SEARCH_PANEL: showTabsSearchPanel(true); break;
@@ -271,9 +271,3 @@ function getHighLight(keyIdx, str) {
 }
 
 console.log('hotkey injected');
-
-function addMessageListener(listener) {
-    browser.runtime.onMessage.addListener((req, sender, resp) => {
-        listener(req, sender, resp);
-    });
-}
