@@ -17,12 +17,11 @@ addMessageListener((method, data, sender, resp) => {
         return;
     }
     switch (method) {
-        case GLOBAL.METHOD.CACHE_LOAD: 
+        case GLOBAL.METHOD.CACHE_LOAD:
             getTabs().then(tabs => {
                 tabs.forEach(tb => {
-                    console.log(tb.url);
-                    sendMessageToTab(tb.id, method)
-                })
+                    sendMessageToTab(tb.id, method);
+                });
             });
             break;
         case GLOBAL.METHOD.TABS_HIS: 
