@@ -11,14 +11,14 @@
     },
     "content_scripts": [
         {
-            "run_at": "document_end",
+            "run_at": "document_start",
             "match_origin_as_fallback": true,
             "all_frames": true,
             "js": ["js/v3_api.js", "js/constant.js", "js/inject_all.js" ],
             "matches": ["<all_urls>"]
         },
         {
-            "run_at": "document_end",
+            "run_at": "document_start",
             "match_origin_as_fallback": true,
             "js": ["js/inject.js"],
             "css": ["inject.css"],

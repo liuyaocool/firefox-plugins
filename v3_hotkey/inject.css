@@ -63,7 +63,9 @@
 
 .ly-hotkey-tabs-name {
     color: white;
-    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ly-hotkey-tabs-url {
     color: gray;
