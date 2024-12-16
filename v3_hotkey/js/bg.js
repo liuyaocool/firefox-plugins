@@ -18,7 +18,7 @@ addMessageListener((method, data, sender, resp) => {
     }
     switch (method) {
         case GLOBAL.METHOD.CACHE_LOAD:
-            getTabs().then(tabs => {
+            getTabsAll().then(tabs => {
                 tabs.forEach(tb => {
                     sendMessageToTab(tb.id, method);
                 });
@@ -38,8 +38,14 @@ addMessageListener((method, data, sender, resp) => {
 
 async function getTabs() {
     return (await browser.tabs.query({
-        // "lastFocusedWindow": true
+        "lastFocusedWindow": true
     })).filter(tb => 
+        !tb.url.startsWith('moz-extension://') && !tb.url.startsWith('about:')
+    );
+}
+
+async function getTabsAll() {
+    return (await browser.tabs.query({})).filter(tb => 
         !tb.url.startsWith('moz-extension://') && !tb.url.startsWith('about:')
     );
 }
