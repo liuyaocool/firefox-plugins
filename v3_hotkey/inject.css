@@ -63,12 +63,13 @@
 
 .ly-hotkey-tabs-name {
     color: white;
+    font-weight: bold;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .ly-hotkey-tabs-url {
-    color: gray;
+    color: #b7b2b2;
     white-space: nowrap; /* 不换行 */
     overflow: hidden;
     text-overflow: ellipsis; /* 显示省略号 */
