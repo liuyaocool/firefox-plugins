@@ -121,3 +121,5 @@ function showMsg(msg) {
         document.getElementById('msg').innerText = '';
     }, 1000);
 }
+
+console.log('config init');
