@@ -44,3 +44,11 @@ function uuid() {
 function getSourceUrl(path) {
     return browser.runtime.getURL(path); 
 }
+
+/**
+ * @param {*} listener (tab) => {}
+ */
+function bgBindActionClicked(listener) {
+    browser.action.onClicked.addListener(listener);
+}
+
