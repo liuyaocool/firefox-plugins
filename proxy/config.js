@@ -94,7 +94,7 @@ function getConfig(url, success, fail) {
 
 function showMsg(type, str) {
     var msg = document.getElementById('ly_proxy_msg');
-    msg.innerHTML = str;
+    msg.innerText = str;
     switch (type) {
         case "I": msg.style.color = "#00ffd0fa"; break;
         case "E": msg.style.color = "#ff3333fa"; break;
