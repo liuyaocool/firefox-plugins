@@ -37,3 +37,10 @@ https://developer.mozilla.org/zh-CN/docs/Mozilla/Add-ons/WebExtensions/manifest.
 
 - 禁用alt快捷键: about:config -> ui.key.menuAccessKey
 - 开发版 关闭插件签名校验: about:config -> xpinstall.signatures.required=false
+
+# publish plugin
+
+- 右上角三横线打开菜单
+- 更多工具
+- 面向开发者的扩展
+- ...
