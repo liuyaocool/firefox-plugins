@@ -6,23 +6,8 @@ document.getElementById('ly_proxy_config').onblur = e => {
     } catch (e) {
         showMsg('E', "格式化失败: " + e);
     }
+    console.log(handleConfig(e.target.value));
 };
-
-let cacheIds = [STORE_KEY_CONFIG, 'ly_proxy_remote_url'];
-window.onbeforeunload = ev => {
-    sessionStorage.sign = 1;
-    cacheIds.forEach(id => sessionStorage[id] = document.getElementById(id).value) || '';
-}
-if (sessionStorage[cacheIds[0]]) {
-    cacheIds.forEach(id => document.getElementById(id).value = sessionStorage[id]);
-    showMsg('I', "配置已从 session 加载");
-} else {
-    browser.storage.local.get(cacheIds).then(res => {
-        if (!res) return;
-        for (let id in res) document.getElementById(id).value = res[id];
-        showMsg('I', "配置已从 storage 加载");
-    });
-}
 
 document.getElementById('ly_proxy_save').onclick = e => {
     try {
@@ -38,7 +23,7 @@ document.getElementById('ly_proxy_save').onclick = e => {
 }
 
 document.getElementById('ly_proxy_temp').onclick = e => {
-    getConfig(browser.runtime.getURL('config.json'), resp => {
+    getConfig('config.json', resp => {
         document.getElementById('ly_proxy_config').value = resp;
         showMsg('I', '已加载本地配置模板, 请点击保存');
     });
@@ -68,7 +53,27 @@ document.getElementById('ly_proxy_check_proxy').oninput = e => {
         return;
     }
     let cfg = handleConfig(document.getElementById('ly_proxy_config').value);
-    showMsg('I', JSON.stringify(matchProxy(e.target.value.split('.'), cfg)));
+    let url = e.target.value;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `http://${url}`
+    }
+    showMsg('I', JSON.stringify(matchProxyByUrl(url+'/', cfg)));
+}
+
+let cacheIds = [STORE_KEY_CONFIG, 'ly_proxy_remote_url'];
+window.onbeforeunload = ev => {
+    sessionStorage.sign = 1;
+    cacheIds.forEach(id => sessionStorage[id] = document.getElementById(id).value) || '';
+}
+if (sessionStorage[cacheIds[0]]) {
+    cacheIds.forEach(id => document.getElementById(id).value = sessionStorage[id]);
+    showMsg('I', "配置已从 session 加载");
+} else {
+    browser.storage.local.get(cacheIds).then(res => {
+        if (!res) return;
+        for (let id in res) document.getElementById(id).value = res[id];
+        showMsg('I', "配置已从 storage 加载");
+    });
 }
 
 function getConfig(url, success, fail) {

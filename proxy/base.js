@@ -1,29 +1,31 @@
 const STORE_KEY_CONFIG = 'ly_proxy_config';
+const DIRECT_PROXY = [{type: "direct"}];
 
 function matchProxyByUrl(url, config) {
-    return matchProxy(getUrlHostSplit(url), config);
-}
-
-/**
- * 
- * @param {*} hostSplit 
- * @param {*} config handleConfig#return
- * @returns 
- */
-function matchProxy(hostSplit, config) {
-    if(config['exclude_localhost'] && hostSplit.length == 1) {
-        if('localhost' === hostSplit[0].split(':')[0]) {
-            return config['proxy_list'][0];;
+    // get url host split
+    let i, c, hostSplit = [[]], hostsIdx = 0;
+    for (i = url[7] == '/' ? 8 : 7; i < url.length; i++) {
+        // case ':': // 不忽略端口, 如果是socket协议的端口
+        if ('.' == (c = url[i]) || '/' == c) {
+            hostSplit[hostsIdx] = hostSplit[hostsIdx].join('');
+            if ('/' == c) break;
+            hostSplit[++hostsIdx] = [];
+            continue;
         }
+        hostSplit[hostsIdx].push(c);
     }
-    let i, tmp = config['suffix'];
-    for (i = hostSplit.length -1; i >= 0; i--)
-        if(tmp && typeof (tmp = tmp[hostSplit[i]]) == 'number')
-            return config['proxy_list'][tmp];
-    for (tmp = config['prefix'], i = 0; i < hostSplit.length; i++)
-        if(tmp && typeof (tmp = tmp[hostSplit[i]]) == 'number')
-            return config['proxy_list'][tmp];
-    return config['proxy_list'][config['global']];
+    for (c = config['special'], i = hostSplit.length -1; i >= 0; i--)
+        if (c && (c = c[hostSplit[i]]) && Array.isArray(c))
+            return c;
+    if (true === config['equals'][hostSplit.join('.')]) 
+        return DIRECT_PROXY;
+    for (c = config['prefix'], i = 0; i <  hostSplit.length; i++)
+        if (c && true === (c = c[hostSplit[i]])) 
+            return DIRECT_PROXY;
+    for (c = config['suffix'], i = hostSplit.length -1; i >= 0; i--)
+        if (c && true === (c = c[hostSplit[i]]))
+            return DIRECT_PROXY;
+    return config['global'];
 }
 
 /**
@@ -31,95 +33,94 @@ function matchProxy(hostSplit, config) {
  * @param {*} text 
  * @returns 
  *  {
- *      "proxy_list": [
- *          {type: "direct"},
- *          [{type: "https" ...}, {type: "http", ...}], // global
- *          [{type: "https" ...}, {type: "http", ...}], // special
- *          // special...
- *      ],
- *      "global": 1 or 0,
- *      "exclude_localhost": true,
+ *      "global": [proxy array],
+ *      "special": {
+ *          "com": {
+ *              "baidu": [proxy array],
+ *              "bilibili": [proxy array]
+ *          },
+ *      },
+ *      "equals": {
+ *          "localhost": true
+ *      },
  *      "suffix": {
  *          "com": {
- *              "baidu": 0,
- *              "bilibili": 0,
- *              "21tb": 0,
- *              "openai": 2
+ *              "baidu": true,
+ *              "bilibili": true,
+ *              "openai": true,
  *          },
  *          "link": {
- *              "liuyao": 0,
+ *              "liuyao": true,
  *          }
  *      },
  *      "prefix": {
  *          "127": {
- *              "1": 0,
+ *              "1": true,
  *          },
  *          "172": {
- *              "21": 0,
+ *              "21": true,
  *          }
  *      }
  *  };
  */
 function handleConfig(text) {
-    let config = JSON.parse(text), suffix = {}, prefix = {}, 
-        proxy_list = [{type: "direct"}], globalIdx = 0;
-    // global open, set idx = 1
-    if(config['global_proxy'].toLowerCase(0) != 'direct') 
-        globalIdx = proxy_list.push(newProxyInfo(config['global_proxy'])) - 1;
-    let convert = (proxyIdx, host) => {
-        let tmp = suffix, hs = host.split('.');
-        for (let i = hs.length -1; i >= 0; i--) {
-            // no child set proxy (proxyIdx: proxy_list index)
-            if (!tmp[hs[i]]) tmp[hs[i]] = 0 == i ? proxyIdx : {};
-            tmp = tmp[hs[i]];
-        }
+    let config = JSON.parse(text), 
+        special= {}, suffix = {}, prefix = {}, equals = {}, 
+        ipPort, tmp, hs, next;
+    for (const p in config['special_proxy']) {
+        if (!(ipPort = newProxyInfo(p))) continue;
+        config['special_proxy'][p].forEach(h => {
+            tmp = special;
+            hs = splitHost(h);
+            for (let i = hs.length-1; i > 0; i--) {
+                if (!hs[i]) continue;
+                if (Array.isArray(next = tmp[hs[i]])) return;
+                tmp = next ? next : (tmp[hs[i]] = {});
+            }
+            tmp[hs[0]] = ipPort;
+        });
     }
+    config['exclude_equals'].forEach(host => equals[host] = true);
     config['exclude_prefix'].forEach(h => {
-        let tmp = prefix, hs = h.split('.');
-        for (let i = 0; i < hs.length; i++) {
-            // no child set proxy (0: proxy_list index)
-            if (!tmp[hs[i]]) tmp[hs[i]] = i == (hs.length-1) ? 0 : {};
-            tmp = tmp[hs[i]];
+        tmp = prefix;
+        hs = splitHost(h);
+        for (let i = 0; i < hs.length-1; i++) {
+            if (!hs[i]) continue;
+            if (true === (next = tmp[hs[i]])) return;
+            tmp = next ? next : (tmp[hs[i]] = {});
         }
+        tmp[hs[hs.length-1]] = true;
     });
-    config['exclude_suffix'].forEach(h => convert(0, h));
-    for (const proxy in config['special_proxy']) {
-        config['special_proxy'][proxy].forEach(h => convert(proxy_list.push(newProxyInfo(proxy)) - 1, h));
-    }
+    // todo
+    config['exclude_suffix'].forEach(h => {
+        tmp = suffix;
+        hs = splitHost(h);
+        for (let i = hs.length-1; i > 0; i--) {
+            if (true === (next = tmp[hs[i]])) return;
+            tmp = next ? next : (tmp[hs[i]] = {});
+        }
+        tmp[hs[0]] = true;
+    });
     return {
-        "proxy_list": proxy_list,
-        "global": globalIdx,
-        "exclude_localhost": config['exclude_localhost'],
-        "prefix": prefix,
-        "suffix": suffix
+        "global": newProxyInfo(config['global_proxy']),
+        special, equals, prefix, suffix
     }
 }
 
 function newProxyInfo(ipPort) {
-    ipPort = ipPort.split(':');
-    ipPort = [
+    if (ipPort.toLowerCase() == 'direct') {
+        return DIRECT_PROXY;
+    }
+    if((ipPort = ipPort.split(':')).length != 2) return null;
+    return [
         {type: "http", host: ipPort[0], port: ipPort[1]*1},
         {type: "https", host: ipPort[0], port: ipPort[1]*1}
     ];
-    return ipPort;
 }
 
-function getUrlHostSplit(url) {
-    let c, hosts = [[]], hostsIdx = 0;
-    out:
-    for (let i = url[7] == '/' ? 8 : 7; i < url.length; i++) {
-        switch (c = url[i]) {
-            case '.':
-                hosts[hostsIdx] = hosts[hostsIdx].join('');
-                hosts[++hostsIdx] = [];
-                continue;
-            // case ':': // 不忽略端口, 如果是socket协议的端口
-            case '/': break out;
-            default: hosts[hostsIdx].push(c);
-        }
-    }
-    if(hosts[hostsIdx] && typeof hosts[hostsIdx] != 'string') {
-        hosts[hostsIdx] = hosts[hostsIdx].join('');
-    }
-    return hosts;
+function splitHost(host) {
+    let hs = host.split('.');
+    let hs1 = [];
+    hs.filter(e => e).forEach(e => hs1.push(e));
+    return hs1;
 }

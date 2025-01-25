@@ -1,20 +1,27 @@
 {
     "global_proxy": "127.0.0.1:9091",
     "special_proxy": {
-        "127.0.0.1:9091": [
-            "google.com",
-            "googleapis.com",
+        "127.0.0.1:9092": [
             "openai.com"
+        ],
+        "127.0.0.1:9093": [
+            "chatgpt.com"
         ]
     },
-    "exclude_localhost": true,
+    "exclude_equals": [
+        "bilivideo.cn:8082",
+        "localhost",
+        "qnqcdn.net:22443",
+        "tencent.com:8106"
+    ],
     "exclude_prefix": [
         "10",
-        "127",
+        "127.0.0",
         "172",
         "192"
     ],
     "exclude_suffix": [
+        "cn",
         "61linux.com",
         "ilinux.ink",
         "liuyao.link",
@@ -41,7 +48,6 @@
         "qifu-api.baidubce.com",
         "bilibili.com",
         "bilivideo.com",
-        "bilivideo.cn:8082",
         "hdslb.com",
         "cnblogs.com",
         "csdn.net",
@@ -81,7 +87,6 @@
         "googletagmanager.com",
         "staticfile.org",
         "google-analytics.com",
-        "qnqcdn.net:22443",
         "qq.com",
         "cdn-go.cn",
         "qpic.cn",
@@ -97,7 +102,6 @@
         "taobao.com",
         "tapd.cn",
         "tencent.com",
-        "tencent.com:8106",
         "tencent-cloud.com",
         "tencent-cloud.cn",
         "qcloudimg.com",
