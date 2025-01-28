@@ -19,9 +19,9 @@
             padding: 5px 6px;
         }
         textarea {
-            min-width: calc(100% - 20px);
-            max-width: calc(100% - 20px);
-            height: calc(100% - 300px);
+            width: calc(100% - 20px);
+            resize: vertical;
+            height: calc(100% - 336px);
         }
         #ly_proxy_check_proxy, #ly_proxy_remote_url {
             width: calc(100% - 20px);
@@ -56,13 +56,21 @@
 <input type="button" id="ly_proxy_save" value="保存">
 <input type="button" id="ly_proxy_temp" value="配置模板">
 <input type="button" id="ly_proxy_remote" value="加载远程配置">
-<span id="ly_proxy_introduce">优先级: special_proxy(单独指定 后缀) > exclude_equals(=) > exclude_prefix(前缀) > exclude_suffix(后缀) > global_proxy(全局,"ip:port":代理 / "DIRECT":无代理)</span>
-<br>
 <input type="text" id="ly_proxy_remote_url" placeholder="远程配置url, 仅支持get简单请求"
        value="https://resource.liuyao.link/config/lyproxy.json">
 <input id="ly_proxy_check_proxy" type="text" placeholder="这里输入域名 验证代理">
 <br>
 <span id="ly_proxy_msg"></span>
+<pre id="ly_proxy_introduce">
+    优先级: special_proxy > exclude_equals > exclude_prefix > exclude_suffix > global_proxy
+    - special_proxy: 单独为某些域名指定代理 后缀匹配, 如: "61linux.com" 会匹配 “61linux.com” 及“*.61linux.com”
+    - exclude_equals: 排除域名 等于匹配, 域名全匹配包含端口, 如: “61linux.com:8080” “61linux.com”
+    - exclude_prefix: 排除域名 前缀匹配, 如: "127" 会匹配 “127” 以及 “127.*”
+    - exclude_suffix: 排除域名 后缀匹配, 同special_proxy
+    - global_proxy: 全局代理
+        - "ip:port": 代理地址, 如 "127.0.0.1:9012"
+        - "DIRECT": 无代理
+    </pre>
 <script src="base.js"></script>
 <script src="config.js"></script>
 </body>
