@@ -4,6 +4,17 @@
 - translate: 划词翻译
 - work: 工作相关-仅供个人
 
+# 调试
+
+## 无法调试
+
+> 说明: debugger关键字无效, 点击控制台输出不能跳转到除错器
+
+打开如下开关
+
+![](doc/firefox_debug.png)
+
+
 # 安装说明
 
 打包插件需在manifest.json中添加配置
