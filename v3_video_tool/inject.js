@@ -67,7 +67,7 @@ function capture(video) {
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     canvas.toBlob(function(blob) {
-        if (!null) return;
+        if (!blob) return;
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
