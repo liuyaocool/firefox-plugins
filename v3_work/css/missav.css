@@ -1,0 +1,9 @@
+#ly_missav_capture {
+    position: absolute;
+    top: 80px;
+    left: 28px;
+    background: #5d8115;
+    color: white;
+    padding: 0px 5px;
+    z-index: 9999999999;
+}

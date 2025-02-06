@@ -52,3 +52,14 @@ function bgBindActionClicked(listener) {
     browser.action.onClicked.addListener(listener);
 }
 
+function pageEscListener(listener) {
+    let func = () => listener();
+    window.addEventListener('blur', func);
+    document.addEventListener('scroll', func); 
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') listener();
+    });
+    document.addEventListener("keydown", e => {
+        if (e.key === 'Escape') listener();
+    });
+}

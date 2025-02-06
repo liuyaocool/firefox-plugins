@@ -14,6 +14,12 @@
     "content_scripts": [
         {
             "run_at": "document_end",
+            "js":["js/missav.js"],
+            "css": ["css/missav.css"],
+            "matches": ["https://missav123.com/*", "https://missav.ws/*"]
+        },
+        {
+            "run_at": "document_end",
             "js":["js/base.js", "js/inject.js"],
             "css": ["css/inject.css"],
             "matches": ["*://127.0.0.1/*", "*://*.21tb.com/*"],
