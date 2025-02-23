@@ -21,20 +21,30 @@ addMessageListener((method, data, sender, resp) => {
         if (!func) return;
         switch(func) {
             case "ly_video_capture": capture(curVdo); break;
+            case "ly_video_full": full(curVdo); break;
+            case "ly_video_unfull": unfull(curVdo); break;
         }
     });
     document.body.addEventListener('contextmenu', e => {
         rmvContext(CONTEXT_ID);
-        curVdo = null;
-        let vdos = document.getElementsByTagName('video');
-        for (let i = 0, rect; i < vdos.length; i++) {
-            rect = vdos[i].getClientRects()[0];
-            if (rect && rect.x < e.x && e.x < (rect.x + rect.width) 
-                && rect.y < e.y && e.y < (rect.y + rect.height)) {
-                curVdo = vdos[i];
-                addContext(CONTEXT_ID, e.x, e.y, CONTEXT_W, DOM_TYPE.VIDEO);
-                // console.log(vdos[i]);
-            }
+        console.log(e.target);
+        if ('VIDEO' == e.target.tagName) {
+            curVdo = e.target;
+        } else {
+            curVdo = null;
+            let vdos = document.getElementsByTagName('video');
+            for (let i = 0, rect; i < vdos.length; i++) {
+                rect = vdos[i].getClientRects()[0];
+                if (rect && rect.x < e.x && e.x < (rect.x + rect.width) 
+                    && rect.y < e.y && e.y < (rect.y + rect.height)) {
+                    curVdo = vdos[i];
+                    // console.log(vdos[i]);
+                    break;
+                }
+            }    
+        }
+        if (curVdo) {
+            addContext(CONTEXT_ID, e.x, e.y, CONTEXT_W, curVdo);
         }
         // console.log(`${e.x} ${e.y}`);
     });
@@ -44,21 +54,56 @@ addMessageListener((method, data, sender, resp) => {
         let a = document.getElementById(id);
         if (a) a.remove();
     }
-    function addContext(id, x, y, w, type) {
+    function addContext(id, x, y, w, dom) {
         let div = document.createElement('div');
         div.id = id;
         div.style.width = w + 'px';
         div.style.top = y + 'px';
         div.style.left = (x - w) + 'px';
-        switch(type) {
-            case DOM_TYPE.VIDEO:
-                div.innerHTML += `<div ly_video_tool_func="ly_video_capture">Capture</div>`;
+        switch(dom.tagName) {
+            case "VIDEO":
+                div.innerHTML += `
+                <div ly_video_tool_func="ly_video_capture">Capture</div>
+                ${dom.classList.contains('ly-video-full-screen') 
+                    ? '<div ly_video_tool_func="ly_video_unfull">Page UnFull</div>'
+                    : '<div ly_video_tool_func="ly_video_full">Page Full</div>'
+                }
+                `;
                 break;
             default: return;
         }
         document.body.appendChild(div);
     }
 })()
+
+function unfull(video) {
+    video.classList.remove('ly-video-full-screen');
+    video.removeEventListener("mouseenter", vdoMouseEnter)
+    document.body.classList.remove('ly-video-no');
+    if ('false' == video.getAttribute('ly_video_has_controls')) {
+        video.removeAttribute('controls');
+    }
+}
+
+function full(video) {
+    document.body.classList.add('ly-video-no');
+    video.classList.add('ly-video-full-screen');
+    video.addEventListener("mouseenter", vdoMouseEnter)
+}
+
+function vdoMouseEnter(e) {
+    addControls(e.target);
+}
+
+function addControls(video) {
+    let has = video.hasAttribute('ly_video_has_controls');
+    if (video.hasAttribute('controls')) {
+        if (!has) video.setAttribute('ly_video_has_controls', "true");
+    } else {
+        video.setAttribute('controls', "true");
+        if (!has) video.setAttribute('ly_video_has_controls', "false");
+    }
+}
 
 function capture(video) {
     var canvas = document.createElement('canvas');

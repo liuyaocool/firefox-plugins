@@ -22,3 +22,23 @@
 #ly-video-context > div:hover {
     background-color: #dc6106;
 }
+
+.ly-video-full-screen {
+    position: fixed !important;
+    top: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+    bottom: 0px !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
+
+.ly-video-no {
+    /* position: absolute !important; */
+}
+
+.ly-video-no *:not(.ly-video-full-screen,#ly-video-context,#ly-video-context *) {
+    position: fixed !important;
+    left: 100% !important;
+}
