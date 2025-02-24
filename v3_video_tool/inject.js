@@ -8,13 +8,11 @@ addMessageListener((method, data, sender, resp) => {
 
 (function() {
     let curVdo;
-    const CONTEXT_ID = 'ly-video-context', CONTEXT_W = 100,
+    const CONTEXT_ID = 'ly-video-context',
         DOM_TYPE = {
             "VIDEO": 'VIDEO'
         };
-    pageEscListener(() => {
-        rmvContext(CONTEXT_ID);
-    });
+    pageEscListener(escPress);
     document.addEventListener('click', e => {
         let func = e.target.getAttribute('ly_video_tool_func');
         rmvContext(CONTEXT_ID);
@@ -38,72 +36,74 @@ addMessageListener((method, data, sender, resp) => {
                 if (rect && rect.x < e.x && e.x < (rect.x + rect.width) 
                     && rect.y < e.y && e.y < (rect.y + rect.height)) {
                     curVdo = vdos[i];
-                    // console.log(vdos[i]);
                     break;
                 }
-            }    
+            }
         }
         if (curVdo) {
-            addContext(CONTEXT_ID, e.x, e.y, CONTEXT_W, curVdo);
+            addContext(CONTEXT_ID, e.x, e.y, curVdo);
         }
-        // console.log(`${e.x} ${e.y}`);
     });
-
 
     function rmvContext(id) {
         let a = document.getElementById(id);
         if (a) a.remove();
     }
-    function addContext(id, x, y, w, dom) {
+    function addContext(id, x, y, dom) {
         let div = document.createElement('div');
         div.id = id;
-        div.style.width = w + 'px';
         div.style.top = y + 'px';
-        div.style.left = (x - w) + 'px';
+        div.style.right = (window.innerWidth - x) + 'px';
         switch(dom.tagName) {
             case "VIDEO":
                 div.innerHTML += `
-                <div ly_video_tool_func="ly_video_capture">Capture</div>
+                <div ly_video_tool_func="ly_video_capture">截图</div>
                 ${dom.classList.contains('ly-video-full-screen') 
-                    ? '<div ly_video_tool_func="ly_video_unfull">Page UnFull</div>'
-                    : '<div ly_video_tool_func="ly_video_full">Page Full</div>'
+                    ? '<div ly_video_tool_func="ly_video_unfull">退出全屏</div>'
+                    : '<div ly_video_tool_func="ly_video_full">页面全屏</div>'
                 }
+                <div onclick="this.parentElement.remove()">关闭菜单</div>
                 `;
                 break;
             default: return;
         }
         document.body.appendChild(div);
     }
+
+    function unfull(video) {
+        video.classList.remove('ly-video-full-screen');
+        video.removeEventListener("mouseenter", vdoMouseEnter)
+        document.body.classList.remove('ly-video-no');
+        if ('false' == video.getAttribute('ly_video_has_controls')) {
+            video.removeAttribute('controls');
+        }
+    }
+
+    function full(video) {
+        document.body.classList.add('ly-video-no');
+        video.classList.add('ly-video-full-screen');
+        video.addEventListener("mouseenter", vdoMouseEnter);
+    }
+
+    function vdoMouseEnter(e) {
+        addControls(e.target);
+    }
+
+    function addControls(video) {
+        let has = video.hasAttribute('ly_video_has_controls');
+        if (video.hasAttribute('controls')) {
+            if (!has) video.setAttribute('ly_video_has_controls', "true");
+        } else {
+            video.setAttribute('controls', "true");
+            if (!has) video.setAttribute('ly_video_has_controls', "false");
+        }
+    }
+
+    function escPress() {
+        rmvContext(CONTEXT_ID);
+    }
+
 })()
-
-function unfull(video) {
-    video.classList.remove('ly-video-full-screen');
-    video.removeEventListener("mouseenter", vdoMouseEnter)
-    document.body.classList.remove('ly-video-no');
-    if ('false' == video.getAttribute('ly_video_has_controls')) {
-        video.removeAttribute('controls');
-    }
-}
-
-function full(video) {
-    document.body.classList.add('ly-video-no');
-    video.classList.add('ly-video-full-screen');
-    video.addEventListener("mouseenter", vdoMouseEnter)
-}
-
-function vdoMouseEnter(e) {
-    addControls(e.target);
-}
-
-function addControls(video) {
-    let has = video.hasAttribute('ly_video_has_controls');
-    if (video.hasAttribute('controls')) {
-        if (!has) video.setAttribute('ly_video_has_controls', "true");
-    } else {
-        video.setAttribute('controls', "true");
-        if (!has) video.setAttribute('ly_video_has_controls', "false");
-    }
-}
 
 function capture(video) {
     var canvas = document.createElement('canvas');

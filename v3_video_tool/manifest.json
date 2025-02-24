@@ -19,15 +19,14 @@
   ],
 
   "permissions": [
-    "activeTab",
-    "contextMenus"
+    "activeTab"
   ],
 
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "v3_video_tool.ffp@61linux.com",
-      "strict_min_version": "91.1.0"
+      "id": "video_tool.ffp@61linux.com",
+      "strict_min_version": "109.0"
     }
   }
 }
