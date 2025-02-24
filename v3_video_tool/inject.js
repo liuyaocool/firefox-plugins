@@ -71,17 +71,19 @@ addMessageListener((method, data, sender, resp) => {
     }
 
     function unfull(video) {
+        // document.body.classList.remove('ly-video-no');
         video.classList.remove('ly-video-full-screen');
-        video.removeEventListener("mouseenter", vdoMouseEnter)
-        document.body.classList.remove('ly-video-no');
-        if ('false' == video.getAttribute('ly_video_has_controls')) {
-            video.removeAttribute('controls');
-        }
+        video.removeEventListener("mouseenter", vdoMouseEnter);
+        rmControls(video);
+        replaceSign(video);
     }
 
     function full(video) {
-        document.body.classList.add('ly-video-no');
+        // document.body.classList.add('ly-video-no');
+        addSign(video);
         video.classList.add('ly-video-full-screen');
+        video.remove();
+        document.body.appendChild(video);
         video.addEventListener("mouseenter", vdoMouseEnter);
     }
 
@@ -89,6 +91,11 @@ addMessageListener((method, data, sender, resp) => {
         addControls(e.target);
     }
 
+    function rmControls(video) {
+        if ('false' == video.getAttribute('ly_video_has_controls')) {
+            video.removeAttribute('controls');
+        }
+    }
     function addControls(video) {
         let has = video.hasAttribute('ly_video_has_controls');
         if (video.hasAttribute('controls')) {
@@ -104,6 +111,18 @@ addMessageListener((method, data, sender, resp) => {
     }
 
 })()
+
+function addSign(dom) {
+    let sp = document.createElement('span');
+    sp.id = 'ly-video-vdodom-sign';
+    dom.parentNode.insertBefore(sp, dom);
+}
+
+function replaceSign(dom) {
+    let sign = document.getElementById('ly-video-vdodom-sign');
+    sign.parentNode.insertBefore(dom, sign);
+    sign.remove();
+}
 
 function capture(video) {
     var canvas = document.createElement('canvas');
