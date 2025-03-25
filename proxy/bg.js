@@ -31,6 +31,7 @@ browser.proxy.onRequest.addListener(req => {
         if (req.requestHeaders[i].name == "Referer") {
             p = matchProxyByUrl(req.requestHeaders[i].value, proxy_config);
             // console.log(`${req.requestHeaders[i].value}`);
+            break;
         }
     }
     if (!p) {
