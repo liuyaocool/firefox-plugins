@@ -25,10 +25,19 @@ function setLocalConfig(configJsonText) {
     console.log(proxy_config);
 }
 
-browser.proxy.onRequest.addListener(req => {    
-    let p = matchProxyByUrl(req.url, proxy_config);
-    // console.log(p);
+browser.proxy.onRequest.addListener(req => {
+    let p = null;
+    for (let i = 0; i < req.requestHeaders.length; i++) {
+        if (req.requestHeaders[i].name == "Referer") {
+            p = matchProxyByUrl(req.requestHeaders[i].value, proxy_config);
+            // console.log(`${req.requestHeaders[i].value}`);
+        }
+    }
+    if (!p) {
+        p = matchProxyByUrl(req.url, proxy_config);
+    }
+    // console.log(`${p[0].type} :: ${req.method} ${req.url}`);
     return p;
-    // return {type: "http", host: "127.0.0.1", port: 65535};
-    // return {type: "direct"};
-}, {urls: ["<all_urls>"]});
+    // return [{type: "http", host: "127.0.0.1", port: 65535}];
+}, {urls: ["<all_urls>"]}
+, ["requestHeaders"]);
