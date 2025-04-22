@@ -5,6 +5,7 @@
 document.onmouseup = function (e) {
     let sel = document.getSelection(), 
         sss, str = sel.toString(),
+        // 选中只有 结果box
         onlyAnswer = true;
     if (!str || !(str = str.trim())) return;
     outfor:
@@ -23,29 +24,6 @@ document.onmouseup = function (e) {
     let lan = checkAndGetToLan(str);
     if (!lan) return;
     sendToBackground(GLOBAL.EVENT.SRC, {lan: lan, str: str});
-}
-
-function checkAndGetToLan(str) {
-    if (str.indexOf('http://') == 0
-        || str.indexOf('https://') == 0
-    ) return '';
-    let lanCount = {};
-    for (let i = 0; i < str.length; i++) {
-        GLOBAL.LAN_CHECK.forEach(la => {
-            if (!la[1].test(str.charAt(i))) return;
-            if (!lanCount[la[0]]) lanCount[la[0]] = 0;
-            lanCount[la[0]]++;
-        });
-    }
-    let maxLan;
-    for(var k in lanCount) {
-        if (!maxLan) {
-            maxLan = k;
-            continue;
-        }
-        maxLan = lanCount[k] > lanCount[maxLan] ? k : maxLan;
-    }
-    return maxLan;
 }
 
 console.log('translate inject_all success');

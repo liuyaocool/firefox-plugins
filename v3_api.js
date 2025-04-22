@@ -18,6 +18,10 @@ async function sendMessageToTab(tabId, method, data) {
     return await browser.tabs.sendMessage(tabId, {method: method, data: data});
 }
 
+async function msgToTabFrame(tabId, frameId, method, data) {
+    return await browser.tabs.sendMessage(tabId, {method: method, data: data}, {frameId: frameId});
+}
+
 async function sendToActiveTab(method, data) {
     let tab = await getActiveTab();
     return await sendMessageToTab(tab.id, method, data);

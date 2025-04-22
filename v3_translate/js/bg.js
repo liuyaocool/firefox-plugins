@@ -1,26 +1,39 @@
 addMessageListener((req, sender, resp) => {
     switch (req.event) {
-        case GLOBAL.EVENT.SRC: forwardToActiveTab(req); break;
-        case GLOBAL.EVENT.TRANSLATE: translate(req.data.lan, req.data.str); break;
+        case GLOBAL.EVENT.SRC: translate(req.data.lan, req.data.str); break;
         default: break;
     }
 });
 
-function translate(lan, str) {
-    enToChGoogle(lan, str).then(res => {
-        sendToActiveTab(GLOBAL.EVENT.TRANSLATE_RESULT, {str: str, trans: res});
-    });
-}
+browser.menus.create(
+    {
+      id: "ly_translate_translate",
+      title: "LY Translate",
+      contexts: ["selection"],
+    }, () => {
 
-function enToChGoogle(lan, str) {
-    return new Promise((resolve, reject) => {
+    }
+);
+
+browser.menus.onClicked.addListener((info, tab) => {
+    let text = info.selectionText;
+    switch(info.menuItemId) {
+        case "ly_translate_translate":
+            let lan = checkAndGetToLan(text);
+            if (!lan) return;
+            translate(lan, text);
+            break;
+    }
+});
+
+function translate(lan, str) {
+    sendToActiveTab(GLOBAL.EVENT.SRC, {lan: lan, str: str});
         switch (lan) {
             case GLOBAL.LAN.EN: lan = 'en'; break;
             case GLOBAL.LAN.CH: lan = 'zh-CN'; break;
-            default: resolve('请选择 中文或英文'); return;
+            default: return;
         }
         let xhr = new XMLHttpRequest();
-        // console.log(str);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 let trans = '';
@@ -55,12 +68,11 @@ function enToChGoogle(lan, str) {
                 } else {
                     trans = `<p>请求出错: ${xhr.response}</p>`;
                 }
-                resolve(trans);
+                sendToActiveTab(GLOBAL.EVENT.TRANSLATE_RESULT, {str: str, trans: trans});
             }
         };
         xhr.open("GET",
             `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lan}&dj=1&dt=t&dt=bd&dt=qc&dt=rm&dt=ex&dt=at&dt=ss&dt=rw&dt=ld&q=${str}&tk=389519.389519`,
             true);
         xhr.send(null);
-    });
 }

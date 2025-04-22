@@ -104,7 +104,6 @@ function translate(lan, src) {
         return;
     }
     addBox(src);
-    sendToBackground(GLOBAL.EVENT.TRANSLATE, {lan: lan, str: src});
 }
 
 function buling(id) {
