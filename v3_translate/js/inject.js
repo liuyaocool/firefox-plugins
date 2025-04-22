@@ -1,17 +1,12 @@
 addMessageListener((req, sender, resp) => {
     switch(req.event) {
-        case GLOBAL.EVENT.SRC: translate(req.data.lan, req.data.str); break;
+        case GLOBAL.EVENT.SRC: translate(req.data.str); break;
         case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.str, req.data.trans); break;
         default: break;
     }
 });
 
-(() => {
-    var div = document.createElement('div');
-    div.id = GLOBAL.CONTAINER_ID;
-    document.body.append(div);
-    console.log('translate inject success');
-})()
+console.log('translate inject success');
 
 for (let i = 0; i < 0; i++) {
     document.getElementById(GLOBAL.CONTAINER_ID).innerHTML += `
@@ -57,6 +52,12 @@ function addBox(src) {
     addDiv.onmouseover = e => ING[src].leave = true;
     addDiv.onmouseleave = e => ING[src].leave = false;
     let divDom = document.getElementById(GLOBAL.CONTAINER_ID);
+    if (!divDom) {
+        var div = document.createElement('div');
+        div.id = GLOBAL.CONTAINER_ID;
+        document.body.append(div);
+        divDom = document.getElementById(GLOBAL.CONTAINER_ID);
+    }
     divDom.insertBefore(addDiv, divDom.firstChild);
 }
 
@@ -97,7 +98,7 @@ function rmv(src) {
     setTimeout(() => resDiv.remove(), timout*1.5);
 }
 
-function translate(lan, src) {
+function translate(src) {
     if (ING[src]) {
         buling(ING[src].id);
         ING[src].tim = 6;

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ly-translate",
-  "version": "1.1",
+  "version": "1.2",
   "description": "划词翻译-英汉互译/日译汉",
   "icons": {
     "32": "img/32.png",
