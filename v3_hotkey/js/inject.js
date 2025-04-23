@@ -1,3 +1,12 @@
+
+const basePrefix = 'ly-hotkey-';
+const selectClass = `${basePrefix}select`;
+const boxClass = `${basePrefix}box`;
+const tabsPrefix = `${basePrefix}tabs-`;
+const tabsDataId = `${tabsPrefix}data_id`;
+const tabsSwitchId = tabsDataId;
+const tabsPanelId = 'f2ff4831683d499ca8aba45ef9355b51';
+
 document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {
         escPress();
@@ -6,6 +15,24 @@ document.addEventListener('visibilitychange', function() {
 window.addEventListener('blur', function() {
     // 窗口失去焦点
     escPress();
+});
+
+window.addEventListener('click', function(e) {
+    let parent = e.target;
+    for (;;) {
+        if ('BODY' === parent.tagName) {
+            escPress();
+            break;
+        }
+        if (parent.id === tabsPanelId || parent.id === tabsSwitchId) {
+            break;
+        }
+        if (parent.classList.contains('ly-hotkey-tabs-tab')) {
+            jumpToTabByChoose(parent);
+            break;
+        }
+        parent = parent.parentElement;
+    }
 });
 
 addMessageListener((method, data, sender, resp) => {
@@ -22,12 +49,6 @@ addMessageListener((method, data, sender, resp) => {
     }
 })
 
-const basePrefix = 'ly-hotkey-';
-const selectClass = `${basePrefix}select`;
-const boxClass = `${basePrefix}box`;
-const tabsPrefix = `${basePrefix}tabs-`;
-const tabsDataId = `${tabsPrefix}data_id`;
-
 function escPress() {
     showTabsSearchPanel(false);
     showTabsSwitchPanel(0);
@@ -42,7 +63,6 @@ function gotoTabsSwitchPanel() {
 }
 
 function showTabsSwitchPanel(offset) {
-    const tabsSwitchId = tabsDataId;
     if (0 == offset) {
         let a = document.getElementById(tabsSwitchId);
         if (a) a.remove();
@@ -72,7 +92,6 @@ function setTabHisList(tabList) {
 
 function showTabsSearchPanel(show) {
     const tabsInputId = `3c88a577464c4f839d1f56fd0b1c22f2`;
-    const tabsPanelId = 'f2ff4831683d499ca8aba45ef9355b51';
     if (!show) {
         let a = document.getElementById(tabsPanelId);
         if (a) a.remove();
@@ -112,6 +131,10 @@ function setTabSearchList(tabList) {
 function jumpToTab() {
     let choose = document.querySelectorAll(`#${tabsDataId} > .${selectClass}`)[0];
     if (!choose) return;
+    jumpToTabByChoose(choose);
+}
+
+function jumpToTabByChoose(choose) {
     let tabc = tabs[choose.getAttribute('tabIdx')*1];
     // jump to tab
     sendToBackground(GLOBAL.METHOD.GOTO_TAB, tabc.id);

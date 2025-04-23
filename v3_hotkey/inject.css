@@ -46,6 +46,10 @@
     font-size: 13px;
     position: relative;
     text-align: left;
+    cursor: pointer;
+}
+.ly-hotkey-tabs-tab:hover {
+    background-color: #626262;
 }
 
 .ly-hotkey-tabs-tab img {
