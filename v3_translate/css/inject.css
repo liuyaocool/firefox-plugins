@@ -78,11 +78,11 @@
     100% { opacity: 1; }
 }
 
-.buling {
+#ly_translate_en2ch .buling {
     animation: 100ms 2 shake;
 }
 
-p {
+#ly_translate_en2ch p {
     margin: 0 !important;
     border-bottom: 1px solid #8080806e;
 }
