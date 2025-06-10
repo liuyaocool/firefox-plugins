@@ -8,7 +8,7 @@ addMessageListener((req, sender, resp) => {
 browser.menus.create(
     {
       id: "ly_translate_translate",
-      title: "LY Translate",
+      title: "Translate",
       contexts: ["selection"],
     }, () => {
 

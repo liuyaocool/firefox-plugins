@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "hotkey",
-    "version": "1.5",
+    "version": "1.6",
     "description": "firefox增强插件",
     "icons": {
         "32": "img/32.png",
@@ -40,6 +40,7 @@
     "permissions": [
         "activeTab",
         "tabs",
+        "menus",
         "storage"
     ],
     "browser_specific_settings": {

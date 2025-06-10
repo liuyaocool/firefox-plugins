@@ -9,7 +9,29 @@ storageGet(GLOBAL.KEY_BIND_CACHE).then(c => {
     storageSet(GLOBAL.KEY_BIND_CACHE, 
         '{"COPY":{"code":"KeyD","ctrlKey":true},"SWITCH_PREV":{"code":"Backquote","altKey":true},"SWITCH_NEXT":{"code":"Tab","altKey":true},"SEARCH":{"code":"KeyO","altKey":true}}'
     );
-})
+});
+
+browser.menus.create(
+    {
+      id: "ly_hotkey_copy",
+      title: "Copy",
+      contexts: ["selection"],
+    }, () => {
+    }
+);
+
+browser.menus.onClicked.addListener((info, tab) => {
+    let text = info.selectionText;
+    switch(info.menuItemId) {
+        case "ly_hotkey_copy":
+            navigator.clipboard.writeText(text)
+            .catch((e) => {
+                console.error(e);
+                console.log(text);
+            });
+            break;
+    }
+});
 
 addMessageListener((method, data, sender, resp) => {
     if (GLOBAL.KEY[method]) {
