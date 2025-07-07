@@ -54,7 +54,10 @@ document.getElementById('ly_proxy_check_proxy').oninput = e => {
     }
     let cfg = handleConfig(document.getElementById('ly_proxy_config').value);
     let url = e.target.value;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    if (!url.startsWith('http://') 
+        && !url.startsWith('https://') 
+        && !url.startsWith('ws://')
+    ) {
         url = `http://${url}`
     }
     showMsg('I', JSON.stringify(matchProxyByUrl(url+'/', cfg)));

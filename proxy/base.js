@@ -4,7 +4,12 @@ const DIRECT_PROXY = [{type: "direct"}];
 function matchProxyByUrl(url, config) {
     // get url host split
     let i, c, hostSplit = [[]], hostsIdx = 0;
-    for (i = url[7] == '/' ? 8 : 7; i < url.length; i++) {
+    if (url[2] == ':') i = 5; // ws://xxx
+    else if (url[4] == ':') i = 7; // http://xxx
+    else if (url[5] == ':') i = 8; // https://xxx
+    else return DIRECT_PROXY;
+    
+    for (; i < url.length; i++) {
         // case ':': // 不忽略端口, 如果是socket协议的端口
         if ('.' == (c = url[i]) || '/' == c) {
             hostSplit[hostsIdx] = hostSplit[hostsIdx].join('');
