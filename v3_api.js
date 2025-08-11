@@ -41,8 +41,17 @@ async function storageGet(k) {
     return (await browser.storage.local.get([k]))[k];
 }
 
+// 指定长度
 function uuid() {
-    return crypto.randomUUID().replaceAll('-', '');
+    // 不好用 http站点没这个函数
+    if (crypto && crypto.randomUUID) {
+        return crypto.randomUUID().replaceAll('-', '');
+    }
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let radix = chars.length, uuid = '', i;
+    len = 32;
+    for (i = 0; i < len; i++) uuid += chars.charAt(0 | Math.random() * radix);
+    return uuid;
 }
 
 function getSourceUrl(path) {
