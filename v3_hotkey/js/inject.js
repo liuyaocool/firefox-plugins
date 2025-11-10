@@ -20,7 +20,7 @@ window.addEventListener('blur', function() {
 window.addEventListener('click', function(e) {
     let parent = e.target;
     for (;;) {
-        if ('BODY' === parent.tagName) {
+        if (!parent || 'BODY' === parent.tagName) {
             escPress();
             break;
         }
