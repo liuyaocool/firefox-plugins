@@ -92,6 +92,27 @@ function getConfig(url, success, fail) {
     xhr.send(null);
 }
 
+function setConfig(jsonStr) {
+    let val = ly_proxy_config.value;
+    if (val) {
+        try {
+            val = JSON.parse(val);
+            if (val = val.global_proxy) {
+                jsonStr = JSON.parse(jsonStr);
+                jsonStr.global_proxy = val;
+                jsonStr = JSON.stringify(jsonStr);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    document.getElementById('ly_proxy_config').value = jsonFormat(jsonStr);
+}
+
+function jsonFormat(jsonStr) {
+    return JSON.stringify(JSON.parse(jsonStr), null, 4);
+}
+
 function showMsg(type, str) {
     var msg = document.getElementById('ly_proxy_msg');
     msg.innerText = str;
