@@ -11,32 +11,10 @@ var GLOBAL = {
         JP: "JP",
     },
     LAN_CHECK: [
-        // [转换到哪个语言 LAN, regex]
-        ["CH", /^[a-zA-Z]+$/],
-        ["EN", /[\u4e00-\u9fff]/], // 中文
-        ["CH", /[\u3040-\u30ff]/], // 日文
+        // [转换到哪个语言 LAN, regex, 占用宽度]
+        ["CH", /^[a-zA-Z]+$/, 1],
+        ["EN", /[\u4e00-\u9fff]/, 2], // 中文
+        ["CH", /[\u3040-\u30ff]/, 2], // 日文
     ],
+    OPTIONS_KEY: "ly_translate_options",
 };
-
-function checkAndGetToLan(str) {
-    if (str.indexOf('http://') == 0
-        || str.indexOf('https://') == 0
-    ) return '';
-    let lanCount = {};
-    for (let i = 0; i < str.length; i++) {
-        GLOBAL.LAN_CHECK.forEach(la => {
-            if (!la[1].test(str.charAt(i))) return;
-            if (!lanCount[la[0]]) lanCount[la[0]] = 0;
-            lanCount[la[0]]++;
-        });
-    }
-    let maxLan;
-    for(var k in lanCount) {
-        if (!maxLan) {
-            maxLan = k;
-            continue;
-        }
-        maxLan = lanCount[k] > lanCount[maxLan] ? k : maxLan;
-    }
-    return maxLan;
-}

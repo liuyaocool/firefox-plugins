@@ -1,6 +1,6 @@
 addMessageListener((req, sender, resp) => {
     switch(req.event) {
-        case GLOBAL.EVENT.SRC: translate(req.data.str); break;
+        case GLOBAL.EVENT.SRC: addBox(req.data.str, req.data.str_width); break;
         case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.str, req.data.trans); break;
         default: break;
     }
@@ -9,26 +9,41 @@ addMessageListener((req, sender, resp) => {
 console.log('translate inject success');
 
 for (let i = 0; i < 0; i++) {
+    if (!document.getElementById(GLOBAL.CONTAINER_ID)) {
+        var div = document.createElement('div');
+        div.id = GLOBAL.CONTAINER_ID;
+        document.body.append(div);
+    }
     document.getElementById(GLOBAL.CONTAINER_ID).innerHTML += `
 <div id="1695101791448479">
-        <div class="ly_trnslate_src">样式</div>
+        <div class="ly_trnslate_src big">样式</div>
         <div class="ly_trnslate_ret">
-        <p>style</p>
-        <p>noun:<span>style</span><span>pattern</span><span>form</span><span>type</span></p>
-        <p></p>
+            <div>style</div>
+            <div>noun:<span>style</span><span>pattern</span><span>form</span><span>type</span></div>
+            <div></div>
         </div>
         <span class="ly_trnslate_close">
             关闭(<span id="1695101791448479_tim">1</span>s)
         </span>
     </div>
         <div id="aaaa_${i}">
-            <div class="ly_trnslate_src">swaylock is a screen locking utility for Wayland compositors. It is compatible with any Wayland compositor which implements the ext-session-lock-v1 Wayland protocol.</div>
-            <div class="ly_trnslate_ret"><p>result</p><p>noun:<span>result</span><span>outcome</span><span>consequence</span><span>effect</span><span>consequent</span><span>upshot</span><span>payoff</span><span>sequel</span><span>educt</span><span>bottom line</span><span>event</span></p><p>verb:<span>slay</span><span>finish off</span><span>kill</span></p><p><span>Results</span></p></div>
+            <div class="ly_trnslate_src small">swaylock is a screen locking utility for Wayland compositors. It is compatible with any Wayland compositor which implements the ext-session-lock-v1 Wayland protocol.</div>
+            <div class="ly_trnslate_ret">
+                <div>result resultresultresultresultresult resultresultresultresultresult result result result result result</div>
+                <div>noun:<span>result</span><span>consequent</span><span>upshot</span><span>bottom line</span><span>event</span></div>
+                <div>verb:<span>slay</span><span>finish off</span><span>kill</span></div>
+                <div><span>Results</span></div>
+            </div>
             <span class="ly_trnslate_close">关闭(5s)</span>
         </div>
         <div id="bbbb_${i}">
-            <div class="ly_trnslate_src">this is page</div>
-            <div class="ly_trnslate_ret"><p>车轮</p><p>noun:<span>轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮</span><span>车轮</span><span>轮子</span><span>毂</span><span>轱</span></p><p>verb:<span>盘旋</span><span>翔</span></p><p><span>推</span></p></div>
+            <div class="ly_trnslate_src big">this is page</div>
+            <div class="ly_trnslate_ret">
+                <div>车轮</div>
+                <div>noun:<span>轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮轮</span><span>车轮</span><span>轮子</span><span>毂</span><span>轱</span></div>
+                <div>verb:<span>盘旋</span><span>翔</span></div>
+                <div><span>推</span></div>
+            </div>
             <span class="ly_trnslate_close">关闭(5s)</span>
         </div>
 `;
@@ -37,12 +52,18 @@ for (let i = 0; i < 0; i++) {
 // <need, {tim:,id:,}>
 const ING = {};
 
-function addBox(src) {
+function addBox(src, src_width) {
+    if (ING[src]) {
+        buling(ING[src].id);
+        ING[src].tim = 6;
+        return;
+    }
+    console.log(src_width)
     ING[src] = { id: uuid(), tim: 5, leave: false }
     let addDiv = document.createElement('div');
     addDiv.id = ING[src].id;
     addDiv.innerHTML = `
-        <div class="ly_trnslate_src">${src}</div>
+        <div class="ly_trnslate_src ${src_width < 19 ? 'big' : 'small'}">${src}</div>
         <div class="ly_trnslate_ret"></div>
         <span class="ly_trnslate_close">
             关闭(<span id="${ING[src].id}_tim">${ING[src].tim}</span>s)
@@ -96,15 +117,6 @@ function rmv(src) {
         resDiv.style.opacity = 0;
     }
     setTimeout(() => resDiv.remove(), timout*1.5);
-}
-
-function translate(src) {
-    if (ING[src]) {
-        buling(ING[src].id);
-        ING[src].tim = 6;
-        return;
-    }
-    addBox(src);
 }
 
 function buling(id) {

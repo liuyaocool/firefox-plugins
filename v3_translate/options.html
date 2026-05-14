@@ -2,10 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>翻译配置</title>
+    <title>排除</title>
+    <style>
+        body {
+            background-color: #181a1b;
+        }
+        body, #config {
+            color: white;
+        }
+        #config {
+            width: 300px;
+            height: 300px;
+            resize: none;
+            background: none;
+            margin-bottom: 5px;
+        }
+        h2 {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-this is config page
-<script src="options.js"></script>
+    <h2>排除站点</h2>
+    <textarea id="config"></textarea><br>
+    <input type="button" value="save" id="save">
+    <input type="button" value="add this" id="add_this">
+    <input type="button" value="rm this" id="rm_this">
+
+    <script src="js/constant.js"></script>
+    <script src="js/v3_api.js"></script>
+    <script src="js/options.js"></script>
 </body>
 </html>
