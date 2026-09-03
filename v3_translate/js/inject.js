@@ -1,8 +1,7 @@
 addMessageListener((req, sender, resp) => {
     switch(req.event) {
-        case GLOBAL.EVENT.SRC: addBox(req.data.str, req.data.str_width); break;
-        case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.str, req.data.trans); break;
-        default: break;
+        case GLOBAL.EVENT.SRC: addBox(req.data.src); break;
+        case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.src, req.data.trans); break;
     }
 });
 
@@ -52,18 +51,18 @@ for (let i = 0; i < 0; i++) {
 // <need, {tim:,id:,}>
 const ING = {};
 
-function addBox(src, src_width) {
+function addBox(src) {
     if (ING[src]) {
         buling(ING[src].id);
         ING[src].tim = 6;
         return;
     }
-    console.log(src_width)
+    let lan = getLan(src);
     ING[src] = { id: uuid(), tim: 5, leave: false }
     let addDiv = document.createElement('div');
     addDiv.id = ING[src].id;
     addDiv.innerHTML = `
-        <div class="ly_trnslate_src ${src_width < 19 ? 'big' : 'small'}">${src}</div>
+        <div class="ly_trnslate_src ${lan.src_width < 19 ? 'big' : 'small'}">${lan.str}</div>
         <div class="ly_trnslate_ret"></div>
         <span class="ly_trnslate_close">
             关闭(<span id="${ING[src].id}_tim">${ING[src].tim}</span>s)
@@ -80,6 +79,9 @@ function addBox(src, src_width) {
         divDom = document.getElementById(GLOBAL.CONTAINER_ID);
     }
     divDom.insertBefore(addDiv, divDom.firstChild);
+
+    lan.src = src;
+    sendToBackground(GLOBAL.EVENT.TRANSLATE, lan);
 }
 
 function fillBox(src, transHtml) {
@@ -123,4 +125,32 @@ function buling(id) {
     let classList = document.getElementById(id).classList;
     classList.add('buling');
     setTimeout(() => classList.remove('buling'), 500);
+}
+
+function getLan(str) {
+    for(const item of ['http://', 'https://', 'magnet:?']) {
+        if (str.indexOf(item) == 0) return null
+    }
+    let lanCount = {}, str_res = [], str_width = 0;
+    for(const lan in GLOBAL.LAN_CHECK) lanCount[lan] = 0;
+    for (let i = 0; i < str.length; i++) {
+        str_res[i] = ' ';
+        for (const la in GLOBAL.LAN_CHECK) {
+            if (!GLOBAL.LAN_CHECK[la][1].test(str.charAt(i))) continue;
+            lanCount[la]++;
+            str_res[i] = str[i];
+            str_width += GLOBAL.LAN_CHECK[la][2];
+        }
+    }
+    str = str_res.join('');
+    let lan = GLOBAL.LAN1, lanLen = lanCount[lan];
+    for(var k in lanCount) {
+        if (lanCount[k] > lanCount[lan]) {
+            lan = k;
+            lanLen = lanCount[lan];
+        }
+    }
+    if (lanLen <= 0) return null;
+    str = str.replace(/\s+/g, " ").trim();
+    return {lan, str, str_width};
 }

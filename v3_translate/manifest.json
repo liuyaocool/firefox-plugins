@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "ly-translate",
-    "version": "1.5",
+    "version": "1.6",
     "description": "划词翻译-英汉互译/日译汉",
     "icons": {
         "32": "img/32.png",
@@ -21,18 +21,18 @@
 
     "content_scripts": [{
         "run_at": "document_end",
-        "js": ["js/v3_api.js", "js/constant.js", "js/inject.js"],
+        "js": ["js/constant.js", "js/inject.js"],
         "css": ["css/inject.css", "css/shake.css"],
         "matches":["<all_urls>"]
     }, {
         "run_at": "document_end",
-        "js": ["js/v3_api.js", "js/constant.js", "js/inject_all.js"],
+        "js": ["js/constant.js", "js/inject_all.js"],
         "matches": ["<all_urls>"],
         "all_frames": true
     }],
 
     "background": {
-        "scripts": ["js/v3_api.js", "js/constant.js", "js/bg.js"]
+        "scripts": ["js/constant.js", "js/bg.js"]
     },
 
     "permissions": [

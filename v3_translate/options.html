@@ -7,30 +7,49 @@
         body {
             background-color: #181a1b;
         }
-        body, #config {
+        body, #config, .input {
             color: white;
-        }
-        #config {
-            width: 300px;
-            height: 300px;
-            resize: none;
-            background: none;
-            margin-bottom: 5px;
         }
         h2 {
             margin: 0;
+        }
+        .input {
+            outline: none;
+            background: none;
+            margin-bottom: 5px;
+            border: white solid 1px;
+        }
+        .input:focus {
+            border-color: #97ff00;   
+        }
+        #config {
+            resize: none;
+            height: 300px;
+        }
+        #config, #ollama_api {
+            width: 300px;
+        }
+        #ollama_api {
+        }
+        #ollama_model {
+
         }
     </style>
 </head>
 <body>
     <h2>排除站点</h2>
-    <textarea id="config"></textarea><br>
-    <input type="button" value="save" id="save">
+    <textarea id="config" class="input"></textarea><br>
     <input type="button" value="add this" id="add_this">
     <input type="button" value="rm this" id="rm_this">
 
+    <h2>Ollama接口</h2>
+    <div id="ollama_list"></div>
+    <input type="text" class="input" placeholder="接口地址" id="ollama_api"><br>
+    <input type="text" class="input" placeholder="模型名称" id="ollama_model">
+    <hr>
+    <input type="button" value="save" id="save">
+
     <script src="js/constant.js"></script>
-    <script src="js/v3_api.js"></script>
     <script src="js/options.js"></script>
 </body>
 </html>
