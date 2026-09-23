@@ -1,7 +1,7 @@
 addMessageListener((req, sender, resp) => {
     switch(req.event) {
-        case GLOBAL.EVENT.SRC: addBox(req.data.src); break;
-        case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.src, req.data.trans); break;
+        case GLOBAL.EVENT.SRC: addBox(req.data.lan, req.data.str, req.data.str_width); break;
+        case GLOBAL.EVENT.TRANSLATE_RESULT: fillBox(req.data.str, req.data.trans); break;
     }
 });
 
@@ -51,26 +51,26 @@ for (let i = 0; i < 0; i++) {
 // <need, {tim:,id:,}>
 const ING = {};
 
-function addBox(src) {
-    if (ING[src]) {
-        buling(ING[src].id);
-        ING[src].tim = 6;
+function addBox(lan, str, str_width) {
+    let key = str
+    if (ING[key]) {
+        buling(ING[key].id);
+        ING[key].tim = 6;
         return;
     }
-    let lan = getLan(src);
-    ING[src] = { id: uuid(), tim: 5, leave: false }
+    ING[key] = { id: uuid(), tim: 5, leave: false }
     let addDiv = document.createElement('div');
-    addDiv.id = ING[src].id;
+    addDiv.id = ING[key].id;
     addDiv.innerHTML = `
-        <div class="ly_trnslate_src ${lan.src_width < 19 ? 'big' : 'small'}">${lan.str}</div>
+        <div class="ly_trnslate_src ${str_width < 19 ? 'big' : 'small'}">${str}</div>
         <div class="ly_trnslate_ret"></div>
         <span class="ly_trnslate_close">
-            关闭(<span id="${ING[src].id}_tim">${ING[src].tim}</span>s)
+            关闭(<span id="${ING[key].id}_tim">${ING[key].tim}</span>s)
         </span>
     `;
-    addDiv.querySelector('span').onclick = e => rmv(src);
-    addDiv.onmouseover = e => ING[src].leave = true;
-    addDiv.onmouseleave = e => ING[src].leave = false;
+    addDiv.querySelector('span').onclick = e => rmv(key);
+    addDiv.onmouseover = e => ING[key].leave = true;
+    addDiv.onmouseleave = e => ING[key].leave = false;
     let divDom = document.getElementById(GLOBAL.CONTAINER_ID);
     if (!divDom) {
         var div = document.createElement('div');
@@ -80,31 +80,30 @@ function addBox(src) {
     }
     divDom.insertBefore(addDiv, divDom.firstChild);
 
-    lan.src = src;
-    sendToBackground(GLOBAL.EVENT.TRANSLATE, lan);
+    sendToBackground(GLOBAL.EVENT.TRANSLATE, {lan, str});
 }
 
-function fillBox(src, transHtml) {
-    let addDiv = document.getElementById(ING[src].id);
+function fillBox(key, transHtml) {
+    let addDiv = document.getElementById(ING[key].id);
     if (!addDiv) return;
     addDiv.children[1].innerHTML = transHtml;
     addDiv.style.height = addDiv.clientHeight + 'px';
-    if (!ING[src].intv) ING[src].intv = setInterval(() => {
-        if (ING[src].leave) return;
-        if (ING[src].tim == 1) {
-            rmv(src);
+    if (!ING[key].intv) ING[key].intv = setInterval(() => {
+        if (ING[key].leave) return;
+        if (ING[key].tim == 1) {
+            rmv(key);
         } else {
-            let a = document.getElementById(ING[src].id+'_tim');
-            if (a) a.innerText = --ING[src].tim;
+            let a = document.getElementById(ING[key].id+'_tim');
+            if (a) a.innerText = --ING[key].tim;
         }
     }, 1000);
 }
 
-function rmv(src) {
-    if (!ING[src]) return ;
-    clearInterval(ING[src].intv);
-    let resDiv = document.getElementById(ING[src].id);
-    delete ING[src];
+function rmv(key) {
+    if (!ING[key]) return ;
+    clearInterval(ING[key].intv);
+    let resDiv = document.getElementById(ING[key].id);
+    delete ING[key];
     if (!resDiv) return;
     let timout = 500;
     if (resDiv.nextElementSibling) {
@@ -125,32 +124,4 @@ function buling(id) {
     let classList = document.getElementById(id).classList;
     classList.add('buling');
     setTimeout(() => classList.remove('buling'), 500);
-}
-
-function getLan(str) {
-    for(const item of ['http://', 'https://', 'magnet:?']) {
-        if (str.indexOf(item) == 0) return null
-    }
-    let lanCount = {}, str_res = [], str_width = 0;
-    for(const lan in GLOBAL.LAN_CHECK) lanCount[lan] = 0;
-    for (let i = 0; i < str.length; i++) {
-        str_res[i] = ' ';
-        for (const la in GLOBAL.LAN_CHECK) {
-            if (!GLOBAL.LAN_CHECK[la][1].test(str.charAt(i))) continue;
-            lanCount[la]++;
-            str_res[i] = str[i];
-            str_width += GLOBAL.LAN_CHECK[la][2];
-        }
-    }
-    str = str_res.join('');
-    let lan = GLOBAL.LAN1, lanLen = lanCount[lan];
-    for(var k in lanCount) {
-        if (lanCount[k] > lanCount[lan]) {
-            lan = k;
-            lanLen = lanCount[lan];
-        }
-    }
-    if (lanLen <= 0) return null;
-    str = str.replace(/\s+/g, " ").trim();
-    return {lan, str, str_width};
 }

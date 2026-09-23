@@ -6,11 +6,9 @@ var GLOBAL = {
         TRANSLATE: "TRANSLATE",
         TRANSLATE_RESULT: "TRANSLATE_RESULT",
     },
-    OPTIONS_KEY: "ly_translate_options",
-    OLAMA_CACHE_KEY: {
-        API: 'OLAMA_CACHE_KEY_API',
-        MODEL: 'OLAMA_CACHE_KEY_MODEL',
-    },
+    EXCLUDE_DOMAIN_CACHE_KEY: 'ly_translate_EXCLUDE_DOMAIN_CACHE_KEY',
+    CONFIG_CACHE_KEY: 'ly_translate_CONFIG_CACHE_KEY',
+    OPTIONS_KEY: "",
     LAN1: 'EN',
     LAN_CHECK: {
         // 当前语言: [转换到哪个语言, regex, 占用宽度, ollama提示词]
@@ -19,6 +17,20 @@ var GLOBAL = {
         JP: ["zh-CN", /[\u3040-\u30ff]/, 2, "将以下日文翻译为中文,只要结果:"],
     }
 };
+
+/**
+ * @param exclude_domain: 换行分割
+ */
+async function checkIfExclude(storageKey, func) {
+    let domains = await storageGet(storageKey);
+    if (val) {
+        // options.html 中 name
+        val = JSON.parse(val).exclude_domain;
+        if (val && `\n${val}\n`.indexOf(`\n${location.hostname}\n`) >= 0)
+            return;
+    }
+    func();
+}
 
 // ==================================================================
 // ============ v3_api ==============================================

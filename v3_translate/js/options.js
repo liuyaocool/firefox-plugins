@@ -1,43 +1,59 @@
 window.onbeforeunload = ev => {
-    sessionStorage.config = config.value || '';
-    sessionStorage.ollama_api = ollama_api.value || '';
-    sessionStorage.ollama_model = ollama_model.value || '';
+    sessionStorage.config = JSON.stringify(form2Json(main_form));
 }
 
-if (sessionStorage.config) {
-    config.value = sessionStorage.config;
-    ollama_api.value = sessionStorage.ollama_api;
-    ollama_model.value = sessionStorage.ollama_model;
-} else {
-    storageGet(GLOBAL.OPTIONS_KEY).then(val => config.value = val || '');
-    storageGet(GLOBAL.OLAMA_CACHE_KEY.API).then(val => ollama_api.value = val || '');
-    storageGet(GLOBAL.OLAMA_CACHE_KEY.MODEL).then(val => ollama_model.value = val || '');
-}
+(async function() {
+    let str = '';
+    if (!(str = sessionStorage.config)) {
+        str = await storageGet(GLOBAL.CONFIG_CACHE_KEY);
+    }
+    console.log(await storageGet(GLOBAL.EXCLUDE_DOMAIN_CACHE_KEY))
+    if (str) {
+        json2Form(main_form, JSON.parse(str));
+    };
+})()
+
 
 add_this.onclick = e => {
     getActiveTab().then(tab => {
         let a = new URL(tab.url);
-        if (config.value.split('\n').indexOf(a.hostname) >= 0) {
+        if (exclude_domain.value.split('\n').indexOf(a.hostname) >= 0) {
             return;
         }
-        config.value = `${config.value}\n${a.hostname}`.trim();
+        exclude_domain.value = `${exclude_domain.value}\n${a.hostname}`.trim();
     })
 }
 
 rm_this.onclick = e => {
     getActiveTab().then(tab => {
         let a = new URL(tab.url);
-        let val = `\n${config.value}\n`;
+        let val = `\n${exclude_domain.value}\n`;
         let host = `\n${a.hostname}\n`;
         if (val.indexOf(host) < 0) {
             return;
         }
-        config.value = val.replaceAll(host, '\n').trim();
+        exclude_domain.value = val.replaceAll(host, '\n').trim();
     })
 }
 
 save.onclick = e => {
-    storageSet(GLOBAL.OPTIONS_KEY, config.value);
-    storageSet(GLOBAL.OLAMA_CACHE_KEY.API, ollama_api.value);
-    storageSet(GLOBAL.OLAMA_CACHE_KEY.MODEL, ollama_model.value);
+    let formJson = form2Json(main_form);
+    storageSet(GLOBAL.CONFIG_CACHE_KEY, JSON.stringify(formJson));
+    storageSet(GLOBAL.EXCLUDE_DOMAIN_CACHE_KEY, formJson.exclude_domain);
+}
+
+function json2Form(formd, json) {
+    for(let input of formd) {
+        if (input.name) {
+            input.value = json[input.name] || '';
+        }
+    }
+}
+
+function form2Json(formd) {
+    let formData = new FormData(formd), data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+    return data;
 }

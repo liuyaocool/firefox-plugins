@@ -23,7 +23,7 @@ storageGet(GLOBAL.OPTIONS_KEY).then(val => {
             break;
         }
         if (onlyAnswer) return;
-        sendToBackground(GLOBAL.EVENT.SRC, {str: str});
+        sendToBackground(GLOBAL.EVENT.SRC, { str });
     }
     console.log('translate inject_all success');
 });

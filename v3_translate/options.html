@@ -18,37 +18,38 @@
             background: none;
             margin-bottom: 5px;
             border: white solid 1px;
+            width: 300px;
         }
         .input:focus {
             border-color: #97ff00;   
         }
-        #config {
+        #exclude_domain {
             resize: none;
             height: 300px;
         }
-        #config, #ollama_api {
-            width: 300px;
-        }
-        #ollama_api {
-        }
-        #ollama_model {
-
+        tip {
+            color: gray;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <h2>排除站点</h2>
-    <textarea id="config" class="input"></textarea><br>
-    <input type="button" value="add this" id="add_this">
-    <input type="button" value="rm this" id="rm_this">
+    <form id="main_form">
+        <h2>排除站点</h2>
+        <textarea name="exclude_domain" class="input" id="exclude_domain"></textarea><br>
+        <input type="button" value="添加本域名" id="add_this">
+        <input type="button" value="删除本域名" id="rm_this">
 
-    <h2>Ollama接口</h2>
-    <div id="ollama_list"></div>
-    <input type="text" class="input" placeholder="接口地址" id="ollama_api"><br>
-    <input type="text" class="input" placeholder="模型名称" id="ollama_model">
-    <hr>
-    <input type="button" value="save" id="save">
+        <h2>划词翻译长度<tip>超出长度右键点击翻译</tip></h2>
+        <input name="auto_trans_len" type="number" class='input' placeholder="默认300" id="str_len">
 
+        <h2>Ollama接口</h2>
+        <div id="ollama_list"></div>
+        <input name="ollama_api"   type="text" class="input" placeholder="地址 如: http://127.0.0.1:11434/api/generate"><br>
+        <input name="ollama_model" type="text" class="input" placeholder="模型 如: deepseek-v2:16b">
+        <hr>
+        <input type="button" value="保存" id="save">
+    </form>    
     <script src="js/constant.js"></script>
     <script src="js/options.js"></script>
 </body>
