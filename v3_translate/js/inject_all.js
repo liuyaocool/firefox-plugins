@@ -1,6 +1,4 @@
-storageGet(GLOBAL.OPTIONS_KEY).then(val => {
-    if (val && `\n${val}\n`.indexOf(`\n${location.hostname}\n`) >= 0)
-        return;
+checkIfExclude(GLOBAL.EXCLUDE_DOMAIN_CACHE_KEY, () => {
     /**
      * 触发翻译事件 并确定语言并向background发送消息
      */

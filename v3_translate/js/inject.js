@@ -1,3 +1,5 @@
+checkIfExclude(GLOBAL.EXCLUDE_DOMAIN_CACHE_KEY, () => {
+
 addMessageListener((req, sender, resp) => {
     switch(req.event) {
         case GLOBAL.EVENT.SRC: addBox(req.data.lan, req.data.str, req.data.str_width); break;
@@ -125,3 +127,5 @@ function buling(id) {
     classList.add('buling');
     setTimeout(() => classList.remove('buling'), 500);
 }
+
+});

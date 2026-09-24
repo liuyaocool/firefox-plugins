@@ -19,15 +19,12 @@ var GLOBAL = {
 };
 
 /**
- * @param exclude_domain: 换行分割
+ * @param storageKey： 缓存key， 存值需要换行分割
  */
 async function checkIfExclude(storageKey, func) {
     let domains = await storageGet(storageKey);
-    if (val) {
-        // options.html 中 name
-        val = JSON.parse(val).exclude_domain;
-        if (val && `\n${val}\n`.indexOf(`\n${location.hostname}\n`) >= 0)
-            return;
+    if (domains && `\n${domains}\n`.indexOf(`\n${location.hostname}\n`) >= 0) {
+        return;        
     }
     func();
 }
