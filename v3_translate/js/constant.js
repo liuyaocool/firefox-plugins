@@ -5,6 +5,7 @@ var GLOBAL = {
         CHECK_BOX: "CHECK_BOX",
         TRANSLATE: "TRANSLATE",
         TRANSLATE_RESULT: "TRANSLATE_RESULT",
+        CONFIG_MODIFIED: "CONFIG_MODIFIED",
     },
     EXCLUDE_DOMAIN_CACHE_KEY: 'ly_translate_EXCLUDE_DOMAIN_CACHE_KEY',
     CONFIG_CACHE_KEY: 'ly_translate_CONFIG_CACHE_KEY',
@@ -33,7 +34,7 @@ async function checkIfExclude(storageKey, func) {
 // ============ v3_api ==============================================
 // ==================================================================
 
-function sendToBackground(event, data) {
+function sendToBackground(event, data = {}) {
     browser.runtime.sendMessage({event, data}, {})
         // .then(e => console.log(e))
         .catch(e => console.log(e))

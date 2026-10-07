@@ -3,7 +3,9 @@ const OLLAMA = {API: 'http://127.0.0.1/ollama/generate', MODEL: 'deepseek-v2:16b
 // 划词自动翻译长度
 let AUTO_TRANS_LEN = 300;
 
+config_load();
 // options.html 中 name
+function config_load() {    
 storageGet(GLOBAL.CONFIG_CACHE_KEY).then(val => {
     let json = JSON.parse(val);
     OLLAMA.API = json.ollama_api || OLLAMA.API;
@@ -11,11 +13,13 @@ storageGet(GLOBAL.CONFIG_CACHE_KEY).then(val => {
     AUTO_TRANS_LEN = json.auto_trans_len || AUTO_TRANS_LEN;
     console.log(`${JSON.stringify(OLLAMA)} ${val} ${AUTO_TRANS_LEN}`)
 });
+}
 
 addMessageListener((req, sender, resp) => {
     switch (req.event) {
         case GLOBAL.EVENT.SRC: triggerTranslate(req.data.str); break;
         case GLOBAL.EVENT.TRANSLATE: translate(req.data.lan, req.data.str); break;
+        case GLOBAL.EVENT.CONFIG_MODIFIED: config_load(); break;
     }
 });
 
@@ -40,6 +44,7 @@ browser.menus.onClicked.addListener((info, tab) => {
 function triggerTranslate(str, checkLen = true) {
     // {lan, str, str_width}
     let lan = getLan(str);
+    if (!lan) return;
     if (checkLen && lan.str.length > AUTO_TRANS_LEN) return;
     sendToActiveTab(GLOBAL.EVENT.SRC, lan);
 }

@@ -40,6 +40,7 @@ save.onclick = e => {
     let formJson = form2Json(main_form);
     storageSet(GLOBAL.CONFIG_CACHE_KEY, JSON.stringify(formJson));
     storageSet(GLOBAL.EXCLUDE_DOMAIN_CACHE_KEY, formJson.exclude_domain);
+    sendToBackground(GLOBAL.EVENT.CONFIG_MODIFIED);
 }
 
 function json2Form(formd, json) {
