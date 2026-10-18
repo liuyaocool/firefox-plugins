@@ -1,0 +1,80 @@
+{
+    "manifest_version": 3,
+    "name": "Tab Switcher +",
+    "version": "0.1",
+    "description": "firefox增强插件",
+    "icons": {
+        "32": "img/32.png",
+        "64": "img/64.png",
+        "128": "img/128.png"
+    },
+    "action": {
+        "default_icon": {
+            "64": "img/64.png",
+            "32": "img/32.png",
+            "128": "img/128.png"
+        },
+        "default_popup": "popup.html"
+    },
+    "commands": {
+        "prev_tab_last": {
+            "suggested_key": {
+                "default": "Alt+Q",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Prev tab. (sort by last active)"
+        },
+        "next_tab_last": {
+            "suggested_key": {
+                "default": "Alt+W",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Next tab. (sort by last active)"
+        },
+        "prev_tab": {
+            "suggested_key": {
+                "default": "Alt+E",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Prev tab. (Window Sorting)"
+        },
+        "next_tab": {
+            "suggested_key": {
+                "default": "Alt+R",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Next tab. (Window Sorting)"
+        },
+        "search_tab": {
+            "suggested_key": {
+                "default": "Alt+P",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Search tab"
+        },
+        "duplicate_tab": {
+            "suggested_key": {
+                "default": "Alt+C",
+                "mac": "Ctrl+Shift+U"
+            },
+            "description": "Duplicate tab"
+        }
+    },
+    "background": {
+        "scripts": [
+            "constant.js",
+            "bg.js"
+        ]
+    },
+    "permissions": [
+        "tabs",
+        "menus",
+        "storage"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "v3_tabswitch.ffp@61linux.com",
+            "strict_min_version": "109.0"
+        }
+    }
+}

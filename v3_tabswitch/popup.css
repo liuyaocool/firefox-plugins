@@ -1,0 +1,84 @@
+html {
+    margin: 0; 
+    height: 100%
+    border-radius: 2px;
+}
+body {
+    border-radius: 2px;
+/*    background-color: hsla(240, 2%, 26%, 0.77);*/
+    background-color: #323234;
+    width: 600px;
+}
+
+hl {
+    color: #10f900;
+}
+
+#tabList {
+    max-height: 500px;
+    overflow: auto;
+    scrollbar-width: none;       /* Firefox：隐藏滚动条 */
+}
+
+.ly-hotkey-select {
+    background-color: #252525 !important;
+}
+
+.ly-hotkey-tabs-input {
+    color: white;
+    width: 100%;
+    font-size: 15px;
+    padding: 8px 10px;
+    border: 0;
+    margin-bottom: 5px;
+    /* padding 向内扩展 */
+    box-sizing: border-box;
+    border-radius: 5px;
+    outline: none;
+    /* background-color: transparent; */
+    background-color: hsla(240, 3%, 12.9%, 0.35) !important;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.2);
+    border-top: 1px solid hsla(0, 0%, 0%, 0.15);
+    box-shadow: inset 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
+}
+
+.ly-hotkey-tabs-tab {
+    padding: 5px;
+    font-size: 13px;
+    position: relative;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.ly-hotkey-tabs-tab:hover {
+/*    background-color: #626262;*/
+    border: 1px solid #626262;
+}
+
+.ly-hotkey-tabs-tab img {
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.ly-hotkey-tabs-name, .ly-hotkey-tabs-url{
+    padding-left: 36px;
+}
+
+.ly-hotkey-tabs-name {
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ly-hotkey-tabs-url {
+    color: #b7b2b2;
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 显示省略号 */
+}
+
