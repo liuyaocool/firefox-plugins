@@ -2,6 +2,7 @@ let pageTabList, pageCurTab, curTabList, pageTabIdx;
 const SELECT_CLASS = 'ly-hotkey-select';
 (async function() {
     pageCurTab = await getActiveTab();
+    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
     let command = (await storageGet(GLOBAL.CACHE_KEY.COMAND)) || GLOBAL.COMMAND.SEARCH_TAB;
     storageRm(GLOBAL.CACHE_KEY.COMAND);
     switch(command) {
@@ -21,32 +22,28 @@ const SELECT_CLASS = 'ly-hotkey-select';
     console.log('command init: ' + command);
 })();
 
-async function tabLastInit() {
-    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
+function tabLastInit() {
     pageTabList.sort((a, b) => b.lastAccessed - a.lastAccessed);
     baseSwitchInit();
 }
 
-async function tabSiteInit() {
-    let startStr = null, idx, startDomain = ['https://', 'http://', 'file://', 'moz-extension://'];
-    let tabList = await browser.tabs.query({"lastFocusedWindow": true});
+function tabSiteInit() {
     // pageTabList = await browser.tabs.query({
     //     lastFocusedWindow: true,
     //     url: `*://${new URL(pageCurTab.url).hostname}/*`
     // });
-    for(let start of startDomain) {
+    let isok = false;
+    for(let start of ['https://', 'http://', 'file://', 'moz-extension://']) {
         if (pageCurTab.url.indexOf(start) < 0) {
             continue;
         }
-        startStr = pageCurTab.url.substring(0, pageCurTab.url.indexOf('/', start.length) + 1);
-        pageTabList = tabList.filter(tab => tab.url.startsWith(startStr));
+        let startStr = pageCurTab.url.substring(0, pageCurTab.url.indexOf('/', start.length) + 1);
+        pageTabList = pageTabList.filter(tab => tab.url.startsWith(startStr));
+        isok = true;
         break;
     }
-    if ( !pageTabList && pageCurTab.url.startsWith('about:') ) {
-        pageTabList = tabList.filter(tab => tab.url === pageCurTab.url);
-    }
-    if ( !pageTabList ) {
-        pageTabList = tabList;
+    if ( !isok && pageCurTab.url.startsWith('about:') ) {
+        pageTabList = pageTabList.filter(tab => tab.url === pageCurTab.url);
     }
     baseSwitchInit();
 }
@@ -72,8 +69,7 @@ function baseSwitchInit() {
     fillTabList(pageTabList);
 }
 
-async function tabSearchInit() {
-    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
+function tabSearchInit() {
     let inputDom = document.getElementById('tabInput')
     document.onkeydown = e => {
         switch(e.code) {
