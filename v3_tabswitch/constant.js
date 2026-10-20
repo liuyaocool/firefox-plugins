@@ -2,13 +2,20 @@ var GLOBAL = {
     CACHE_KEY: {
         COMAND: "COMAND"
     },
-    EVENT: {
-        GOTO_TAB: "GOTO_TAB",
-    },
     COMMAND: {
+        // 切换 最后聚焦的tab
         PREV_TAB_LAST: "prev_tab_last",
         NEXT_TAB_LAST: "next_tab_last",
+        // 切换 同域名
+        PREV_TAB_SITE: "prev_tab_site",
+        NEXT_TAB_SITE: "next_tab_site",
+        // 切换 窗口当前顺序
+        PREV_TAB: "prev_tab",
+        NEXT_TAB: "next_tab",
+        // 搜索
         SEARCH_TAB: "search_tab",
+        // 复制
+        DUPLICATE_TAB: "duplicate_tab",
     },
     IMG: {
         TAB_ICON_WHITE: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMwAAADABAMAAAC6zpG6AAAAFVBMVEVHcEzV1dX////V1dX8/Pz////V1dXOoMA3AAAAB3RSTlMAq7DZ4//+D6G54gAAAOlJREFUeNrt2zEKgzAUgOFXMJ2bnqCIFxDBuYMHcPB1FqS9/xFKXJ+0RIwp9f/HQPiSkPUJERER/X7XMlRV3dyg0Q1DN1eVoZssVejm3cWmCRKT0wT1u1xGdZfL2Os8NUkP82Z7vJozS/YUo0Rm/7QzK/YYvURWmE1OVcevO2JbZORTMDAwMDAwMNHMmmBgcjKbBwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA3NwJkV/zogmKs9Y6VmTNGaaLJaTD9VNqG3b16qmaWpCde299xcm6YmIiFb3BnVgoLnoscsFAAAAAElFTkSuQmCC",
@@ -20,19 +27,6 @@ var GLOBAL = {
 // =======================================================================
 // ================ v3 api ===============================================
 // =======================================================================
-
-async function sendToBackground(method, data = null) {
-    return await browser.runtime.sendMessage({method: method, data: data}, {});
-}
-
-/**
- * @param {*} listener function(method, data, sender, resp)
- */
-function addMessageListener(listener) {
-    browser.runtime.onMessage.addListener(
-        (req, sender, resp) => listener(req.method, req.data, sender, resp)
-    );
-}
 
 async function getActiveTab() {
     return (await browser.tabs.query({ active: true, lastFocusedWindow: true }))[0];
@@ -50,4 +44,8 @@ async function storageGet(k) {
 
 function storageRm(k) {
     browser.storage.local.remove(k)
+}
+
+function gotoTab(tabId) {
+    browser.tabs.update(tabId, { active: true });
 }

@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Tab Switcher +",
     "version": "0.1",
-    "description": "firefox增强插件",
+    "description": "tab switcher +",
     "icons": {
         "32": "img/32.png",
         "64": "img/64.png",
@@ -18,45 +18,35 @@
     },
     "commands": {
         "prev_tab_last": {
-            "suggested_key": {
-                "default": "Alt+Q",
-                "mac": "Ctrl+Shift+U"
-            },
-            "description": "Prev tab. (sort by last active)"
+            "suggested_key": { "default": "Alt+Q" },
+            "description": "Prev tab. (last active order)"
         },
         "next_tab_last": {
-            "suggested_key": {
-                "default": "Alt+W",
-                "mac": "Ctrl+Shift+U"
-            },
-            "description": "Next tab. (sort by last active)"
+            "suggested_key": { "default": "Alt+W" },
+            "description": "Next tab. (last active order)"
+        },
+        "prev_tab_site": {
+            "suggested_key": { "default": "Alt+E" },
+            "description": "Prev tab. (same-domain by window order)"
+        },
+        "next_tab_site": {
+            "suggested_key": { "default": "Alt+R" },
+            "description": "Next tab. (same-domain by window order)"
         },
         "prev_tab": {
-            "suggested_key": {
-                "default": "Alt+E",
-                "mac": "Ctrl+Shift+U"
-            },
-            "description": "Prev tab. (Window Sorting)"
+            "suggested_key": { "default": "Alt+S" },
+            "description": "Prev tab. (window order)"
         },
         "next_tab": {
-            "suggested_key": {
-                "default": "Alt+R",
-                "mac": "Ctrl+Shift+U"
-            },
-            "description": "Next tab. (Window Sorting)"
+            "suggested_key": { "default": "Alt+F" },
+            "description": "Next tab. (window order)"
         },
         "search_tab": {
-            "suggested_key": {
-                "default": "Alt+P",
-                "mac": "Ctrl+Shift+U"
-            },
+            "suggested_key": { "default": "Alt+P" },
             "description": "Search tab"
         },
         "duplicate_tab": {
-            "suggested_key": {
-                "default": "Alt+C",
-                "mac": "Ctrl+Shift+U"
-            },
+            "suggested_key": { "default": "Alt+C" },
             "description": "Duplicate tab"
         }
     },

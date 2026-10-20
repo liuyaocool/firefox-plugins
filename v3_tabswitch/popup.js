@@ -1,48 +1,96 @@
-let pageTabList, curTabList, pageTabIdx = 1, keyUpClose = false;
-const SELECT_CLASS = 'ly-hotkey-select', TAB_INPUT_ID = 'tabInput';
+let pageTabList, pageCurTab, curTabList, pageTabIdx;
+const SELECT_CLASS = 'ly-hotkey-select';
 (async function() {
+    pageCurTab = await getActiveTab();
     let command = (await storageGet(GLOBAL.CACHE_KEY.COMAND)) || GLOBAL.COMMAND.SEARCH_TAB;
     storageRm(GLOBAL.CACHE_KEY.COMAND);
     switch(command) {
         case GLOBAL.COMMAND.PREV_TAB_LAST:
         case GLOBAL.COMMAND.NEXT_TAB_LAST:
-            keyUpClose = true;
-            browser.commands.onCommand.addListener(cmd => {
-                switch(cmd) {
-                    case "prev_tab_last": focusTab(-1); break;
-                    case "next_tab_last": focusTab(+1); break;
-                }
-            });
+            tabLastInit();
             break;
-        case GLOBAL.COMMAND.SEARCH_TAB:            
-            pageTabIdx = 0;
-            document.onkeydown = e => {
-                // document.getElementById(TAB_INPUT_ID).focus();
-            // document.getElementById(TAB_INPUT_ID).onkeydown = e=> {
-                switch(e.code) {
-                    case 'ArrowUp':   focusTab(-1); break;
-                    case 'ArrowDown': focusTab(+1); break;
-                    case 'Enter': gotoTab(pageTabIdx); break;
-                    default: return;
-                }
-                e.preventDefault();
-            }
-            document.getElementById(TAB_INPUT_ID).style.display = '';
-            document.getElementById(TAB_INPUT_ID).oninput = e => filterTab(e.target.value);
-            setTimeout(() => document.getElementById(TAB_INPUT_ID).focus(), 500);
+        case GLOBAL.COMMAND.NEXT_TAB_SITE:
+        case GLOBAL.COMMAND.PREV_TAB_SITE:
+            tabSiteInit()
+            break;
+        case GLOBAL.COMMAND.SEARCH_TAB:
+            tabSearchInit();
             break;
         default: return;
     }
-    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
-    if (keyUpClose) {
-        pageTabList.sort((a, b) => b.lastAccessed - a.lastAccessed);        
-    }
-    fillTabList(pageTabList);
     console.log('command init: ' + command);
 })();
 
+async function tabLastInit() {
+    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
+    pageTabList.sort((a, b) => b.lastAccessed - a.lastAccessed);
+    baseSwitchInit();
+}
+
+async function tabSiteInit() {
+    let startStr = null, idx, startDomain = ['https://', 'http://', 'file://', 'moz-extension://'];
+    let tabList = await browser.tabs.query({"lastFocusedWindow": true});
+    // pageTabList = await browser.tabs.query({
+    //     lastFocusedWindow: true,
+    //     url: `*://${new URL(pageCurTab.url).hostname}/*`
+    // });
+    for(let start of startDomain) {
+        if (pageCurTab.url.indexOf(start) < 0) {
+            continue;
+        }
+        startStr = pageCurTab.url.substring(0, pageCurTab.url.indexOf('/', start.length) + 1);
+        pageTabList = tabList.filter(tab => tab.url.startsWith(startStr));
+        break;
+    }
+    if ( !pageTabList && pageCurTab.url.startsWith('about:') ) {
+        pageTabList = tabList.filter(tab => tab.url === pageCurTab.url);
+    }
+    if ( !pageTabList ) {
+        pageTabList = tabList;
+    }
+    baseSwitchInit();
+}
+
+function baseSwitchInit() {
+    browser.commands.onCommand.addListener(cmd => {
+        switch(cmd) {
+            case GLOBAL.COMMAND.PREV_TAB_LAST: focusTab(-1); break;
+            case GLOBAL.COMMAND.NEXT_TAB_LAST: focusTab(+1); break;
+            case GLOBAL.COMMAND.PREV_TAB_SITE: focusTab(-1); break;
+            case GLOBAL.COMMAND.NEXT_TAB_SITE: focusTab(+1); break;
+        }
+    });
+    document.addEventListener('keyup', (e) => {
+        /*
+        Chrome：快捷键必须包含 Ctrl 或 Alt（Mac 上是 Command 或 MacCtrl）。Shift 是可选的修饰键，不能单独使用。
+        Firefox：要求类似，组合键必须包含一个非 Shift 的修饰键（Ctrl、Alt、Command 或 MacCtrl），Shift 可以作为附加修饰符，但不能是唯一修饰键。
+        */
+        if (!e.altKey && !e.ctrlKey) {
+            jumpToTab();
+        };
+    });
+    fillTabList(pageTabList);
+}
+
+async function tabSearchInit() {
+    pageTabList = await browser.tabs.query({"lastFocusedWindow": true});
+    let inputDom = document.getElementById('tabInput')
+    document.onkeydown = e => {
+        switch(e.code) {
+            case 'ArrowUp':   focusTab(-1); break;
+            case 'ArrowDown': focusTab(+1); break;
+            case 'Enter': jumpToTab(); break;
+            default: return;
+        }
+        e.preventDefault();
+    }
+    inputDom.style.display = '';
+    inputDom.oninput = e => filterTab(e.target.value);
+    setTimeout(() => inputDom.focus(), 500);
+    fillTabList(pageTabList);
+}
+
 function filterTab(key) {
-    pageTabIdx = 0;
     if (!(key = key.trim())) {
         fillTabList(pageTabList);
         return;
@@ -118,6 +166,9 @@ function hl_replace(line_origin, hl_key_arr, hl_start = '<hl>', hl_end = '</hl>'
  */
 function fillTabList(tabList) {
     curTabList = tabList;
+    // 根据active排序: 第一个肯定是当前页, 这条能用
+    // 其他情况: 避开当前页是0位置的情况即可
+    pageTabIdx = (curTabList.length > 1 && pageCurTab.id == curTabList[0].id) ? 1 : 0;
     // 是否为过滤列表
     let isOrigin = tabList == pageTabList
     let domStr = '';
@@ -126,7 +177,9 @@ function fillTabList(tabList) {
             tabList[i].urlHtml = '';
             tabList[i].titleHtml = '';
         }
-        domStr += `<div id="tab-item-${i}" class="ly-hotkey-tabs-tab ${pageTabIdx == i ? SELECT_CLASS : ''}">
+        domStr += `<div id="tab-item-${i}" 
+            class="ly-hotkey-tabs-tab ${tabList[i].id == pageCurTab.id ? 'cur-tab ' : ''} ${pageTabIdx == i ? SELECT_CLASS : ''}"
+        >
             <img src="${tabList[i].favIconUrl || GLOBAL.IMG.TAB_ICON_WHITE}"/>
             <div class="ly-hotkey-tabs-name">${tabList[i].titleHtml || tabList[i].title}</div>
             <div class="ly-hotkey-tabs-url">${tabList[i].urlHtml || tabList[i].url}</div>
@@ -136,7 +189,7 @@ function fillTabList(tabList) {
     let tabItemDoms = document.querySelectorAll('#tabList > div');
     for (var i = 0; i < tabItemDoms.length; i++) {
         let j = i;
-        tabItemDoms[i].onclick = e => gotoTab(j);
+        tabItemDoms[i].onclick = e => jumpToTab(j);
     };
 }
 
@@ -149,18 +202,9 @@ function focusTab(offset) {
     document.getElementById('tab-item-' + pageTabIdx).scrollIntoView({ block: 'nearest' ,   behavior: 'smooth',});
 }
 
-function gotoTab(tabIdx) {
-    sendToBackground(GLOBAL.EVENT.GOTO_TAB, curTabList[tabIdx].id);
+function jumpToTab(tabIdx = pageTabIdx) {
+    if (curTabList[tabIdx]) {
+        gotoTab(curTabList[tabIdx].id);
+    }
     window.close();
 }
-
-document.addEventListener('keyup', (e) => {
-    /*
-    Chrome：快捷键必须包含 Ctrl 或 Alt（Mac 上是 Command 或 MacCtrl）。Shift 是可选的修饰键，不能单独使用。
-    Firefox：要求类似，组合键必须包含一个非 Shift 的修饰键（Ctrl、Alt、Command 或 MacCtrl），Shift 可以作为附加修饰符，但不能是唯一修饰键。
-    */
-    if (keyUpClose && !e.altKey && !e.ctrlKey) {
-        window.close();
-        gotoTab(pageTabIdx);
-    };
-});

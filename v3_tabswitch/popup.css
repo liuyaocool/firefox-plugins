@@ -24,6 +24,12 @@ hl {
     background-color: #252525 !important;
 }
 
+.cur-tab .ly-hotkey-tabs-name,
+.cur-tab .ly-hotkey-tabs-url
+{
+    color: yellow;
+}
+
 .ly-hotkey-tabs-input {
     color: white;
     width: 100%;
