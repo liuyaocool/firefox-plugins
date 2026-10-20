@@ -82,7 +82,7 @@ function tabSearchInit() {
     }
     inputDom.style.display = '';
     inputDom.oninput = e => filterTab(e.target.value);
-    setTimeout(() => inputDom.focus(), 500);
+    inputDom.focus();
     fillTabList(pageTabList);
 }
 
@@ -94,11 +94,9 @@ function filterTab(key) {
     let tabList = [];
     let keySp = hl_keys(key);
     for(let tab of pageTabList) {
-        let titleHtml = hl_replace(tab.title, keySp);
-        let urlHtml = hl_replace(tab.url, keySp);
-        if (!titleHtml && !urlHtml) continue;
-        tab.titleHtml = titleHtml ? titleHtml.join('') : '';
-        tab.urlHtml = urlHtml ? urlHtml.join('') : '';
+        if (!hl_check(keySp, tab.title, tab.url)) continue;
+        tab.titleHtml = hl_replace(tab.title, keySp);
+        tab.urlHtml = hl_replace(tab.url, keySp);
         tabList.push(tab);
     }
     fillTabList(tabList);
@@ -116,45 +114,55 @@ function hl_keys(keys) {
             }
         }
     }
-    return keys;
+    return keys.filter(k => k);
 }
 
 /**
- * 匹配并高亮
+ * 校验 strs中任意一个有key都ok
+ * @test hl_check_arr([], s1, s2)
+ * @param hl_key_arr ['str1', 'str2'], 要全部存在才行
+ * @return bool
+ */
+function hl_check(hl_key_arr, title, url) {
+    title = title.toLowerCase();
+    url = url.toLowerCase();
+    for(let k of hl_key_arr) {
+        if (title.indexOf(k) < 0 && url.indexOf(k) < 0) return false;
+    }
+    return true;
+}
+
+/**
+ * 只管高亮（不区分大小写）
  * @param hl_key_arr = hl_keys(keystr), 全小写
  * @return array, 如果需要字符串, 调用 .join('');
  */
-function hl_replace(line_origin, hl_key_arr, hl_start = '<hl>', hl_end = '</hl>') {
-    let line = line_origin.toLowerCase();
-    let key_bit = new Array(line.length).fill(0), key_idx;
+function hl_replace(str_origin, hl_key_arr, hl_start = '<hl>', hl_end = '</hl>') {
+    let str_lower = str_origin.toLowerCase();
+    let key_bit = new Array(str_lower.length).fill(0), key_idx;
     for (let k of hl_key_arr) {
-        if (!k) continue;
-        // 不存在k 返回
-        if ((key_idx = line.indexOf(k)) < 0) return null;
-        do {
+        key_idx = -1;
+        while((key_idx = str_lower.indexOf(k, key_idx + 1)) >= 0) {
             // 设置匹配到的标志位为1
-            for (let i = 0; i < k.length; i++) {
-                key_bit[key_idx + i] = 1;
-            }
-            // 没有下一个跳出循环
-        } while ((key_idx = line.indexOf(k, key_idx + 1)) >= 0)
+            key_bit.fill(1, key_idx, key_idx + k.length);
+        }
     }
     let res = [], prev_bit = 0;
     // 合并 且 加上高亮字符串
-    for (let i = 0; i < line.length; i++) {
+    for (let i = 0; i < str_lower.length; i++) {
         // 原始字符 对位到 结果数组
-        res[i] = line_origin[i];
+        res[i] = str_origin[i];
         // 前后相同 无需额外操作
         if (key_bit[i] == prev_bit) continue;
         // 根据后一位0/1判断追加的是头还是尾
-        res[i] = (key_bit[i] == 0 ? hl_end : hl_start ) + line_origin[i];
+        res[i] = (key_bit[i] == 0 ? hl_end : hl_start ) + str_origin[i];
         prev_bit = key_bit[i];
     }
     // 尾部补漏
     if (key_bit[key_bit.length-1] == 1) {
         res[res.length-1] += hl_end; 
     }
-    return res;
+    return res ? res.join('') : '';
 }
 
 /**

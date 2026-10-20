@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Tab Switcher +",
-    "version": "0.1",
+    "version": "1.0",
     "description": "tab switcher +",
     "icons": {
         "32": "img/32.png",
@@ -64,7 +64,10 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "v3_tabswitch.ffp@61linux.com",
-            "strict_min_version": "109.0"
+            "strict_min_version": "140.0",
+            "data_collection_permissions": {
+                "required": ["none"]
+            }
         }
     }
 }
